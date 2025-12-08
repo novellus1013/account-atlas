@@ -6,6 +6,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: AppTheme.light);
+    return MaterialApp(theme: AppTheme.light, home: _TestHome());
+  }
+}
+
+class _TestHome extends StatelessWidget {
+  const _TestHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: Center(child: Text('여기는 시작점')));
   }
 }
