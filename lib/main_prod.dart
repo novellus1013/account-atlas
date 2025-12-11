@@ -1,4 +1,4 @@
-import 'package:account_atlas/app.dart';
+import 'package:account_atlas/core/app/app.dart';
 import 'package:flutter/material.dart';
 
 const bool kIsProd = true;
