@@ -1,4 +1,4 @@
-package com.example.account_atlas
+package co.novelus.accountatlas
 
 import io.flutter.embedding.android.FlutterActivity
 

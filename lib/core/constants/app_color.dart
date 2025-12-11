@@ -4,8 +4,8 @@ class AppColor {
   //private constructor
   const AppColor._();
 
-  static const primary = Colors.yellow;
-  static const secondary = Colors.green;
+  static const primary = Color(0xFF2563Eb);
+  static const secondary = Color(0xFFF97316);
 
   static const black = Colors.black;
   static const white = Colors.white;
