@@ -1,4 +1,3 @@
-import 'package:account_atlas/core/app/app.dart';
 import 'package:account_atlas/core/app/app_shell.dart';
 import 'package:account_atlas/features/accounts/presentation/account_detail_screen.dart';
 import 'package:account_atlas/features/accounts/presentation/accounts_screen.dart';
