@@ -1,8 +1,8 @@
-import 'package:account_atlas/features/accounts/data/account_local_datasource.dart';
 import 'package:account_atlas/features/accounts/data/account_local_mapper.dart';
-import 'package:account_atlas/features/accounts/domain/account_entity.dart';
+import 'package:account_atlas/features/accounts/data/datasources/account_local_datasource.dart';
 import 'package:account_atlas/features/accounts/domain/account_failure.dart';
-import 'package:account_atlas/features/accounts/domain/account_repository.dart';
+import 'package:account_atlas/features/accounts/domain/entities/account_entity.dart';
+import 'package:account_atlas/features/accounts/domain/repositories/account_repository.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
   final AccountLocalDatasource local;

@@ -1,7 +1,7 @@
 import 'package:account_atlas/core/app/app_shell.dart';
-import 'package:account_atlas/features/accounts/presentation/account_detail_screen.dart';
-import 'package:account_atlas/features/accounts/presentation/accounts_screen.dart';
-import 'package:account_atlas/features/accounts/presentation/add_edit_account_screen.dart';
+import 'package:account_atlas/features/accounts/presentation/view/account_detail_screen.dart';
+import 'package:account_atlas/features/accounts/presentation/view/accounts_screen.dart';
+import 'package:account_atlas/features/accounts/presentation/view/add_edit_account_screen.dart';
 import 'package:account_atlas/features/cleanup/presentation/clean_up_screen.dart';
 import 'package:account_atlas/features/home/presentation/home_screen.dart';
 import 'package:account_atlas/features/report/presentation/report_screen.dart';

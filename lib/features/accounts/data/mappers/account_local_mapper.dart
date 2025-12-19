@@ -1,5 +1,5 @@
-import 'package:account_atlas/features/accounts/data/account_local_dto.dart';
-import 'package:account_atlas/features/accounts/domain/account_entity.dart';
+import 'package:account_atlas/features/accounts/data/dtos/account_local_dto.dart';
+import 'package:account_atlas/features/accounts/domain/entities/account_entity.dart';
 
 extension AccountLocalDtoMapper on AccountLocalDto {
   AccountEntity toEntity() {

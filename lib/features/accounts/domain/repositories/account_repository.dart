@@ -1,6 +1,6 @@
-import 'package:account_atlas/features/accounts/domain/account_entity.dart';
-
 //설계도 - entity만 알고 있다.
+import 'package:account_atlas/features/accounts/domain/entities/account_entity.dart';
+
 abstract class AccountRepository {
   Future<int> insertAccount(AccountEntity account);
   Future<AccountEntity?> getAccountById(int id);

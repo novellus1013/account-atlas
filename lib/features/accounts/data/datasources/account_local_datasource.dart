@@ -1,5 +1,5 @@
 import 'package:account_atlas/core/storage/app_database.dart';
-import 'package:account_atlas/features/accounts/data/account_local_dto.dart';
+import 'package:account_atlas/features/accounts/data/dtos/account_local_dto.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class AccountLocalDatasource {
