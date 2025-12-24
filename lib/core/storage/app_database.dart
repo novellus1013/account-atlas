@@ -44,25 +44,24 @@ class AppDatabase {
       CREATE TABLE account_services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         account_id INTEGER NOT NULL, 
-        name TEXT NOT NULL,
+        provided_service_key TEXT,
+        display_name TEXT NOT NULL,
         login_type TEXT NOT NULL,
         login_id TEXT,
-        is_pay INTEGER NOT NULL,
+        is_pay INTEGER NOT NULL CHECK (is_pay IN (0, 1)),
         memo TEXT,
         created_at INTEGER NOT NULL
       );
     ''');
 
     // billing_cycle 0이면 monthly, 1이면 yearly
-    // name -> 구독 모델 이름 (basic, premium, team..etc)
     await db.execute('''
       CREATE TABLE plans (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        service_id INTEGER NOT NULL,
-        name TEXT,
+        account_service_id INTEGER NOT NULL,
         currency TEXT NOT NULL DEFAULT 'KRW',
         amount INTEGER NOT NULL,
-        billing_cycle INTEGER NOT NULL,
+        billing_cycle INTEGER NOT NULL CHECK (billing_cycle IN (0,1)),
         next_billing_date INTEGER NOT NULL,
         created_at INTEGER NOT NULL
       );

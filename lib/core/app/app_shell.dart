@@ -15,7 +15,7 @@ class AppShell extends StatelessWidget {
 }
 
 class _BottomNav extends StatelessWidget {
-  const _BottomNav({super.key});
+  const _BottomNav();
 
   @override
   Widget build(BuildContext context) {
