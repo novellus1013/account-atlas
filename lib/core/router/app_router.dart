@@ -8,7 +8,6 @@ import 'package:account_atlas/features/report/presentation/report_screen.dart';
 import 'package:account_atlas/features/services/presentation/add_edit_service_screen.dart';
 import 'package:account_atlas/features/services/presentation/service_detail_screen.dart';
 import 'package:account_atlas/features/services/presentation/services_screen.dart';
-import 'package:account_atlas/features/settings/presentation/policy_web_view_screen.dart';
 import 'package:account_atlas/features/settings/presentation/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -70,18 +69,6 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/settings',
           builder: (context, state) => SettingsScreen(),
-          routes: [
-            GoRoute(
-              path: 'privacy',
-              builder: (context, state) =>
-                  PolicyWebViewScreen(url: 'https://accountatlas.com/privacy'),
-            ),
-            GoRoute(
-              path: 'terms',
-              builder: (context, state) =>
-                  PolicyWebViewScreen(url: 'https://accountatlas.com/terms'),
-            ),
-          ],
         ),
       ],
     ),
