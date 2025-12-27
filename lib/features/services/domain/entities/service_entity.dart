@@ -7,6 +7,7 @@ class ServiceEntity {
   final String displayName;
   final LoginType loginType;
   final String? loginId;
+  final ServiceCategory category;
   final bool isPay;
   final String? memo;
   final DateTime? createdAt;
@@ -18,6 +19,7 @@ class ServiceEntity {
     required this.displayName,
     required this.loginType,
     this.loginId,
+    required this.category,
     required this.isPay,
     this.memo,
     this.createdAt,

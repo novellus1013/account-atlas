@@ -47,3 +47,25 @@ enum LoginType {
     );
   }
 }
+
+enum ServiceCategory {
+  video('Video'),
+  music('Music'),
+  tool('Tool'),
+  sns('Sns'),
+  shopping('Shopping'),
+  game('Game'),
+  education('Education'),
+  others('others');
+
+  final String dbCode;
+
+  const ServiceCategory(this.dbCode);
+
+  static ServiceCategory fromDbcode(String code) {
+    return ServiceCategory.values.firstWhere(
+      (e) => e.dbCode == code,
+      orElse: () => ServiceCategory.others,
+    );
+  }
+}

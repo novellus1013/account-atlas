@@ -5,6 +5,7 @@ class ServiceLocalDto {
   final String displayName;
   final String loginType;
   final String? loginId;
+  final String category;
   final int isPay;
   final String? memo;
   final int? createdAt;
@@ -16,6 +17,7 @@ class ServiceLocalDto {
     required this.displayName,
     required this.loginType,
     this.loginId,
+    required this.category,
     required this.isPay,
     this.memo,
     this.createdAt,
@@ -29,6 +31,7 @@ class ServiceLocalDto {
       displayName: map['display_name'] as String,
       loginType: map['login_type'] as String,
       loginId: map['login_id'] as String?,
+      category: map['category'] as String,
       isPay: map['is_pay'] as int,
       memo: map['memo'] as String?,
       createdAt: map['created_at'] as int?,
@@ -42,6 +45,7 @@ class ServiceLocalDto {
       'display_name': displayName,
       'login_type': loginType,
       'login_id': loginId,
+      'category': category,
       'is_pay': isPay,
       'memo': memo,
       'created_at': createdAt,
@@ -55,6 +59,7 @@ class ServiceLocalDto {
       'display_name': displayName,
       'login_type': loginType,
       'login_id': loginId,
+      'category': category,
       'is_pay': isPay,
       'memo': memo,
     };

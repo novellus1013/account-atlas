@@ -11,6 +11,7 @@ extension ServiceLocalDtoMapper on ServiceLocalDto {
       displayName: displayName,
       loginType: LoginType.fromDbCode(loginType),
       loginId: loginId,
+      category: ServiceCategory.fromDbcode(category),
       isPay: isPay == 0 ? false : true,
       memo: memo,
       createdAt: DateTime.fromMillisecondsSinceEpoch(createdAt!),
@@ -26,6 +27,7 @@ extension ServiceEntityMapper on ServiceEntity {
       providedServiceKey: providedServiceKey,
       loginType: loginType.dbCode,
       loginId: loginId,
+      category: category.dbCode,
       isPay: isPay == false ? 0 : 1,
       memo: memo,
       createdAt: now,
@@ -40,6 +42,7 @@ extension ServiceEntityMapper on ServiceEntity {
       providedServiceKey: providedServiceKey,
       loginType: loginType.dbCode,
       loginId: loginId,
+      category: category.dbCode,
       isPay: isPay == false ? 0 : 1,
       memo: memo,
     );

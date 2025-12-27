@@ -48,6 +48,7 @@ class AppDatabase {
         display_name TEXT NOT NULL,
         login_type TEXT NOT NULL,
         login_id TEXT,
+        category TEXT,
         is_pay INTEGER NOT NULL CHECK (is_pay IN (0, 1)),
         memo TEXT,
         created_at INTEGER NOT NULL
