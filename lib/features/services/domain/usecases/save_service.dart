@@ -1,5 +1,5 @@
 import 'package:account_atlas/features/services/domain/entities/plan_entity.dart';
-import 'package:account_atlas/features/services/domain/entities/service_entity.dart';
+import 'package:account_atlas/features/services/domain/model/service_detail_read_model.dart';
 import 'package:account_atlas/features/services/domain/repositories/plan_repository.dart';
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 
@@ -9,8 +9,10 @@ class SaveService {
 
   SaveService(this.serviceRepo, this.planRepo);
 
-  Future<int> call({required ServiceEntity service, PlanEntity? plan}) async {
+  Future<int> call(ServiceDetailReadModel all) async {
     final int accountServiceId;
+    final service = all.service;
+    final plan = all.plan;
 
     if (service.id == null) {
       accountServiceId = await serviceRepo.insertService(service);

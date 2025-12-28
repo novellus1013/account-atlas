@@ -25,7 +25,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
   }
 
   @override
-  Future<ServiceEntity?> getServiceById(int id) async {
+  Future<ServiceEntity> getServiceById(int id) async {
     try {
       final dto = await local.getServiceById(id);
       if (dto == null) {

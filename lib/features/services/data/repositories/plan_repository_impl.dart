@@ -27,7 +27,7 @@ class PlanRepositoryImpl implements PlanRepository {
   }
 
   @override
-  Future<PlanEntity?> getPlanByAccountServiceId(int accountServiceId) async {
+  Future<PlanEntity> getPlanByAccountServiceId(int accountServiceId) async {
     try {
       final dto = await local.getPlanByAccountServiceId(accountServiceId);
       if (dto == null) {

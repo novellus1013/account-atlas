@@ -9,7 +9,7 @@ enum Currency {
   static Currency fromDbCode(String code) {
     return Currency.values.firstWhere(
       (e) => e.dbCode == code,
-      orElse: () => Currency.ko,
+      orElse: () => Currency.en,
     );
   }
 }
@@ -56,7 +56,7 @@ enum ServiceCategory {
   shopping('Shopping'),
   game('Game'),
   education('Education'),
-  others('others');
+  others('Others');
 
   final String dbCode;
 
