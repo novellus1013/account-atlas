@@ -6,7 +6,7 @@ class GetAccountById {
 
   GetAccountById(this.repo);
 
-  Future<AccountEntity?> call(int id) {
+  Future<AccountEntity> call(int id) {
     return repo.getAccountById(id);
   }
 }

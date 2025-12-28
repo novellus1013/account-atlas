@@ -1,6 +1,7 @@
 //vm - create account , update account
 
 import 'package:account_atlas/features/accounts/domain/entities/account_entity.dart';
+import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/create_account.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_account_by_id.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/update_account.dart';
@@ -20,12 +21,14 @@ class AddEditAccountViewModel {
   AddEditAccountState _state = AddEditAccountLoading();
   AddEditAccountState get state => _state;
 
-  Future<void> load(int id) async {
+  Future<void> load(int accountId) async {
     _state = AddEditAccountLoading();
 
     try {
-      final account = await _getAccountById.call(id);
+      final account = await _getAccountById.call(accountId);
       _state = AddEditAccountLoaded(account);
+    } on AccountFailure catch (e) {
+      _state = AddEditAccountError(e.message);
     } catch (e) {
       _state = AddEditAccountError();
     }
@@ -35,6 +38,8 @@ class AddEditAccountViewModel {
     try {
       await _createAccount.call(account);
       _state = AddEditAccountLoaded(account);
+    } on AccountFailure catch (e) {
+      _state = AddEditAccountError(e.message);
     } catch (e) {
       _state = AddEditAccountError();
     }
@@ -44,6 +49,8 @@ class AddEditAccountViewModel {
     try {
       await _updateAccount.call(account);
       _state = AddEditAccountLoaded(account);
+    } on AccountFailure catch (e) {
+      _state = AddEditAccountError(e.message);
     } catch (e) {
       _state = AddEditAccountError();
     }

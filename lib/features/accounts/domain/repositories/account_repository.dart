@@ -3,7 +3,7 @@ import 'package:account_atlas/features/accounts/domain/entities/account_entity.d
 
 abstract class AccountRepository {
   Future<int> insertAccount(AccountEntity account);
-  Future<AccountEntity?> getAccountById(int id);
+  Future<AccountEntity> getAccountById(int id);
   Future<List<AccountEntity>> getAllAccounts();
   Future<int> updateAccount(AccountEntity account);
   Future<int> deleteAccount(int id);

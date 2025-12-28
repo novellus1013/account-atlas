@@ -1,3 +1,4 @@
+import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/delete_account.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_account_detail.dart';
 import 'package:account_atlas/features/accounts/presentation/state/acccount_detail_state.dart';
@@ -17,19 +18,19 @@ class AccountDetailViewModel {
     try {
       final detail = await _getAccountDetail.call(accountId);
 
-      if (detail == null) {
-        _state = AccountDetailError();
-      } else {
-        _state = AccountDetailLoaded(detail);
-      }
+      _state = AccountDetailLoaded(detail);
+    } on AccountFailure catch (e) {
+      _state = AccountDetailError(e.message);
     } catch (e) {
       _state = AccountDetailError();
     }
   }
 
-  Future<void> delete(int id) async {
+  Future<void> delete(int accountId) async {
     try {
-      await _deleteAccount.call(id);
+      await _deleteAccount.call(accountId);
+    } on AccountFailure catch (e) {
+      _state = AccountDetailError(e.message);
     } catch (e) {
       _state = AccountDetailError();
     }

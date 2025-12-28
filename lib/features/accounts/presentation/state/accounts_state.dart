@@ -6,7 +6,10 @@ sealed class AccountsState {
 
 class AccountsLoading extends AccountsState {}
 
-class AccountsError extends AccountsState {}
+class AccountsError extends AccountsState {
+  final String message;
+  const AccountsError([this.message = 'An unknown error has occurred.']);
+}
 
 class AccountsEmpty extends AccountsState {}
 

@@ -24,7 +24,7 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<AccountEntity?> getAccountById(int id) async {
+  Future<AccountEntity> getAccountById(int id) async {
     try {
       final dto = await local.getAccountById(id);
       if (dto == null) {

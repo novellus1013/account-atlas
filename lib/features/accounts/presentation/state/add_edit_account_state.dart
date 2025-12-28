@@ -6,7 +6,10 @@ sealed class AddEditAccountState {
 
 class AddEditAccountLoading extends AddEditAccountState {}
 
-class AddEditAccountError extends AddEditAccountState {}
+class AddEditAccountError extends AddEditAccountState {
+  final String message;
+  const AddEditAccountError([this.message = 'An unknown error has occurred.']);
+}
 
 class AddEditAccountLoaded extends AddEditAccountState {
   //account가 존재하면 edit, 없으면 create

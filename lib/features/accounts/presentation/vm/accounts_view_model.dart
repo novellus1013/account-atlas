@@ -1,3 +1,4 @@
+import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_all_accounts.dart';
 import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
 
@@ -11,6 +12,7 @@ class AccountsViewModel {
 
   Future<void> load() async {
     _state = AccountsLoading();
+
     try {
       final accounts = await _getAllAccounts.call();
 
@@ -19,6 +21,8 @@ class AccountsViewModel {
       } else {
         _state = AccountsLoaded(accounts);
       }
+    } on AccountFailure catch (e) {
+      _state = AccountsError(e.message);
     } catch (e) {
       _state = AccountsError();
     }

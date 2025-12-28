@@ -3,7 +3,7 @@ import 'package:account_atlas/features/services/domain/entities/service_entity.d
 
 class AccountDetailReadModel {
   final AccountEntity account;
-  final List<ServiceEntity> services;
+  final List<ServiceEntity?> services;
 
   const AccountDetailReadModel(this.account, this.services);
 }
