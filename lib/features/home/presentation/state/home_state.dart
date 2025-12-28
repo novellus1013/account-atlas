@@ -8,7 +8,10 @@ sealed class HomeState {
 
 class HomeLoading extends HomeState {}
 
-class HomeError extends HomeState {}
+class HomeError extends HomeState {
+  final String message;
+  const HomeError([this.message = 'Failed to load home data.']);
+}
 
 class HomeLoaded extends HomeState {
   final List<CategorySpendingEntity> categories;

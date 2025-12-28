@@ -3,11 +3,11 @@ import 'package:account_atlas/features/services/domain/repositories/plan_reposit
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 
-class MonthyYearlySpending {
+class GetMonthyYearlySpending {
   final ServiceRepository serviceRepo;
   final PlanRepository planRepo;
 
-  MonthyYearlySpending(this.serviceRepo, this.planRepo);
+  GetMonthyYearlySpending(this.serviceRepo, this.planRepo);
 
   Future<MonthlyYearlySpendingEntity> call() async {
     final services = await serviceRepo.getAllServices();
@@ -20,10 +20,10 @@ class MonthyYearlySpending {
     int yearlyTotal = 0;
 
     for (final service in paidServices) {
-      if (service.id == null) continue;
+      final accountServiceId = service.id;
+      if (accountServiceId == null) continue;
 
-      final plan = await planRepo.getPlanByAccountServiceId(service.id!);
-      if (plan == null) continue;
+      final plan = await planRepo.getPlanByAccountServiceId(accountServiceId);
 
       final amount = plan.amount;
 

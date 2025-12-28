@@ -3,11 +3,11 @@ import 'package:account_atlas/features/accounts/presentation/view/account_detail
 import 'package:account_atlas/features/accounts/presentation/view/accounts_screen.dart';
 import 'package:account_atlas/features/accounts/presentation/view/add_edit_account_screen.dart';
 import 'package:account_atlas/features/cleanup/presentation/clean_up_screen.dart';
-import 'package:account_atlas/features/home/presentation/home_screen.dart';
+import 'package:account_atlas/features/home/presentation/view/home_screen.dart';
 import 'package:account_atlas/features/report/presentation/report_screen.dart';
-import 'package:account_atlas/features/services/presentation/add_edit_service_screen.dart';
-import 'package:account_atlas/features/services/presentation/service_detail_screen.dart';
-import 'package:account_atlas/features/services/presentation/services_screen.dart';
+import 'package:account_atlas/features/services/presentation/view/add_edit_service_screen.dart';
+import 'package:account_atlas/features/services/presentation/view/service_detail_screen.dart';
+import 'package:account_atlas/features/services/presentation/view/services_screen.dart';
 import 'package:account_atlas/features/settings/presentation/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -53,10 +53,7 @@ final GoRouter appRouter = GoRouter(
                 id: state.pathParameters['id']!,
               ), //특정 service의 detail 정보
             ),
-            GoRoute(
-              path: 'add',
-              builder: (context, state) => AddEditServiceScreen(),
-            ),
+            GoRoute(path: 'add', builder: (context, state) => ServicesScreen()),
             GoRoute(
               //services table의 id
               path: 'edit/:id',

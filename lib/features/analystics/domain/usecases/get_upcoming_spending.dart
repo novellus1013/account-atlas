@@ -3,11 +3,11 @@ import 'package:account_atlas/features/services/domain/repositories/plan_reposit
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 
-class UpcomingSpending {
+class GetUpcomingSpending {
   final ServiceRepository serviceRepo;
   final PlanRepository planRepo;
 
-  UpcomingSpending(this.serviceRepo, this.planRepo);
+  GetUpcomingSpending(this.serviceRepo, this.planRepo);
 
   Future<List<UpcomingSpendingEntity>> call() async {
     final services = await serviceRepo.getAllServices();
@@ -21,10 +21,10 @@ class UpcomingSpending {
     final List<UpcomingSpendingEntity> items = [];
 
     for (final service in paidServices) {
-      if (service.id == null) continue;
+      final accountServiceId = service.id;
+      if (accountServiceId == null) continue;
 
-      final plan = await planRepo.getPlanByAccountServiceId(service.id!);
-      if (plan == null) continue;
+      final plan = await planRepo.getPlanByAccountServiceId(accountServiceId);
 
       DateTime next = truncateToDate(plan.nextBillingDate);
 

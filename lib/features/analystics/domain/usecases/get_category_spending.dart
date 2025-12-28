@@ -3,11 +3,11 @@ import 'package:account_atlas/features/services/domain/repositories/plan_reposit
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 
-class CategorySpending {
+class GetCategorySpending {
   final ServiceRepository serviceRepo;
   final PlanRepository planRepo;
 
-  CategorySpending(this.serviceRepo, this.planRepo);
+  GetCategorySpending(this.serviceRepo, this.planRepo);
 
   Future<List<CategorySpendingEntity>> call() async {
     final services = await serviceRepo.getAllServices();
@@ -19,10 +19,10 @@ class CategorySpending {
 
     //구독료 카테고리에 할당
     for (final service in paidServices) {
-      if (service.id == null) continue;
+      final accountServiceId = service.id;
+      if (accountServiceId == null) continue;
 
-      final plan = await planRepo.getPlanByAccountServiceId(service.id!);
-      if (plan == null) continue;
+      final plan = await planRepo.getPlanByAccountServiceId(accountServiceId);
 
       final amountPerMonth = plan.billingCycle == BillingCycle.monthly
           ? plan.amount
@@ -34,7 +34,7 @@ class CategorySpending {
           (categoryTotals[category] ?? 0) + amountPerMonth;
     }
 
-    //
+    // 구독료 전체 합산
     final monthlyTotal = categoryTotals.values.fold(
       0,
       (prev, element) => prev + element,
