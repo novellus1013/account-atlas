@@ -11,7 +11,7 @@ class ServiceLocalDatasource {
     final db = await _db;
 
     return await db.insert(
-      'services',
+      'account_services',
       dto.toInsertMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -20,7 +20,7 @@ class ServiceLocalDatasource {
   Future<ServiceLocalDto?> getServiceById(int id) async {
     final db = await _db;
     final result = await db.query(
-      'services',
+      'account_services',
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,
@@ -32,7 +32,7 @@ class ServiceLocalDatasource {
   Future<List<ServiceLocalDto>> getServicesByAccount(int accountId) async {
     final db = await _db;
     final result = await db.query(
-      'services',
+      'account_services',
       where: 'account_id = ?',
       whereArgs: [accountId],
       orderBy: 'created_at DESC',
@@ -43,7 +43,10 @@ class ServiceLocalDatasource {
 
   Future<List<ServiceLocalDto>> getAllServices() async {
     final db = await _db;
-    final result = await db.query('services', orderBy: 'created_at DESC');
+    final result = await db.query(
+      'account_services',
+      orderBy: 'created_at DESC',
+    );
 
     return result.map((e) => ServiceLocalDto.fromMap(e)).toList();
   }
@@ -52,7 +55,7 @@ class ServiceLocalDatasource {
     final db = await _db;
 
     return await db.update(
-      'services',
+      'account_services',
       dto.toUpdateMap(),
       where: 'id = ?',
       whereArgs: [dto.id],
@@ -62,6 +65,10 @@ class ServiceLocalDatasource {
   Future<int> deleteService(int id) async {
     final db = await _db;
 
-    return await db.delete('services', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      'account_services',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

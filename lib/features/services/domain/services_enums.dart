@@ -51,11 +51,12 @@ enum LoginType {
 enum ServiceCategory {
   video('Video'),
   music('Music'),
+  shopping('Shopping'),
   tool('Tool'),
   sns('Sns'),
-  shopping('Shopping'),
+  ai('AI'),
   game('Game'),
-  education('Education'),
+  education('Edu'),
   others('Others');
 
   final String dbCode;
