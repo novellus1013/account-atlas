@@ -7,6 +7,6 @@ class AccountDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('account_detail_screen'));
+    return Center(child: Text('account_detail_screen $id'));
   }
 }

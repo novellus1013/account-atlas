@@ -24,9 +24,9 @@ class _BottomNav extends StatelessWidget {
         return 1;
       } else if (location.startsWith('/services')) {
         return 2;
-      } else if (location.startsWith('/report')) {
-        return 3;
       } else if (location.startsWith('/settings')) {
+        return 3;
+      } else if (location.startsWith('/report')) {
         return 4;
       }
       return 0;
@@ -57,10 +57,10 @@ class _BottomNav extends StatelessWidget {
               context.go('/services');
               break;
             case 3:
-              context.go('/report');
+              context.go('/settings');
               break;
             case 4:
-              context.go('/settings');
+              context.go('/report');
               break;
           }
         },
@@ -71,11 +71,12 @@ class _BottomNav extends StatelessWidget {
             label: '계정',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: '서비스'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_rounded),
-            label: '보고서',
-          ),
+
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.bar_chart_rounded),
+          //   label: '보고서',
+          // ),
         ],
       ),
     );
