@@ -1,0 +1,329 @@
+{
+    "version": 3,
+    "categories": [
+        {
+            "key": "video",
+            "label": "Video",
+            "services": [
+                {
+                    "key": "netflix",
+                    "displayName": "Netflix",
+                    "category": "video"
+                },
+                {
+                    "key": "youtube_premium",
+                    "displayName": "YouTube Premium",
+                    "category": "video"
+                },
+                {
+                    "key": "disney_plus",
+                    "displayName": "Disney+",
+                    "category": "video"
+                },
+                {
+                    "key": "max",
+                    "displayName": "Max",
+                    "category": "video"
+                },
+                {
+                    "key": "prime_video",
+                    "displayName": "Amazon Prime Video",
+                    "category": "video"
+                },
+                {
+                    "key": "apple_tv_plus",
+                    "displayName": "Apple TV+",
+                    "category": "video"
+                }
+            ]
+        },
+        {
+            "key": "music",
+            "label": "Music",
+            "services": [
+                {
+                    "key": "spotify",
+                    "displayName": "Spotify",
+                    "category": "music"
+                },
+                {
+                    "key": "apple_music",
+                    "displayName": "Apple Music",
+                    "category": "music"
+                },
+                {
+                    "key": "youtube_music",
+                    "displayName": "YouTube Music",
+                    "category": "music"
+                },
+                {
+                    "key": "amazon_music",
+                    "displayName": "Amazon Music",
+                    "category": "music"
+                },
+                {
+                    "key": "tidal",
+                    "displayName": "Tidal",
+                    "category": "music"
+                },
+                {
+                    "key": "soundcloud",
+                    "displayName": "SoundCloud",
+                    "category": "music"
+                }
+            ]
+        },
+        {
+            "key": "shopping",
+            "label": "Shopping",
+            "services": [
+                {
+                    "key": "amazon_prime",
+                    "displayName": "Amazon Prime",
+                    "category": "shopping"
+                },
+                {
+                    "key": "walmart_plus",
+                    "displayName": "Walmart+",
+                    "category": "shopping"
+                },
+                {
+                    "key": "uber_one",
+                    "displayName": "Uber One",
+                    "category": "shopping"
+                },
+                {
+                    "key": "doordash",
+                    "displayName": "DoorDash",
+                    "category": "shopping"
+                },
+                {
+                    "key": "instacart_plus",
+                    "displayName": "Instacart+",
+                    "category": "shopping"
+                },
+                {
+                    "key": "costco",
+                    "displayName": "Costco",
+                    "category": "shopping"
+                }
+            ]
+        },
+        {
+            "key": "tool",
+            "label": "Tool",
+            "services": [
+                {
+                    "key": "microsoft_365",
+                    "displayName": "Microsoft 365",
+                    "category": "tool"
+                },
+                {
+                    "key": "google_one",
+                    "displayName": "Google One",
+                    "category": "tool"
+                },
+                {
+                    "key": "notion",
+                    "displayName": "Notion",
+                    "category": "tool"
+                },
+                {
+                    "key": "adobe_cc",
+                    "displayName": "Adobe Creative Cloud",
+                    "category": "tool"
+                },
+                {
+                    "key": "dropbox",
+                    "displayName": "Dropbox",
+                    "category": "tool"
+                },
+                {
+                    "key": "icloud",
+                    "displayName": "iCloud+",
+                    "category": "tool"
+                }
+            ]
+        },
+        {
+            "key": "sns",
+            "label": "Sns",
+            "services": [
+                {
+                    "key": "x",
+                    "displayName": "X",
+                    "category": "sns"
+                },
+                {
+                    "key": "linkedin",
+                    "displayName": "LinkedIn",
+                    "category": "sns"
+                },
+                {
+                    "key": "discord",
+                    "displayName": "Discord",
+                    "category": "sns"
+                },
+                {
+                    "key": "snapchat",
+                    "displayName": "Snapchat",
+                    "category": "sns"
+                },
+                {
+                    "key": "telegram",
+                    "displayName": "Telegram",
+                    "category": "sns"
+                },
+                {
+                    "key": "twitch",
+                    "displayName": "Twitch",
+                    "category": "sns"
+                }
+            ]
+        },
+        {
+            "key": "ai",
+            "label": "AI",
+            "services": [
+                {
+                    "key": "chatgpt",
+                    "displayName": "ChatGPT",
+                    "category": "ai"
+                },
+                {
+                    "key": "claude",
+                    "displayName": "Claude",
+                    "category": "ai"
+                },
+                {
+                    "key": "perplexity",
+                    "displayName": "Perplexity",
+                    "category": "ai"
+                },
+                {
+                    "key": "github_copilot",
+                    "displayName": "GitHub Copilot",
+                    "category": "ai"
+                },
+                {
+                    "key": "midjourney",
+                    "displayName": "Midjourney",
+                    "category": "ai"
+                },
+                {
+                    "key": "gemini",
+                    "displayName": "Gemini",
+                    "category": "ai"
+                }
+            ]
+        },
+        {
+            "key": "game",
+            "label": "Game",
+            "services": [
+                {
+                    "key": "xbox_game_pass",
+                    "displayName": "Xbox Game Pass",
+                    "category": "game"
+                },
+                {
+                    "key": "playstation_plus",
+                    "displayName": "PlayStation Plus",
+                    "category": "game"
+                },
+                {
+                    "key": "nintendo_online",
+                    "displayName": "Nintendo Switch Online",
+                    "category": "game"
+                },
+                {
+                    "key": "geforce_now",
+                    "displayName": "GeForce Now",
+                    "category": "game"
+                },
+                {
+                    "key": "ea_play",
+                    "displayName": "EA Play",
+                    "category": "game"
+                },
+                {
+                    "key": "roblox",
+                    "displayName": "Roblox",
+                    "category": "game"
+                }
+            ]
+        },
+        {
+            "key": "education",
+            "label": "Edu",
+            "services": [
+                {
+                    "key": "duolingo",
+                    "displayName": "Duolingo",
+                    "category": "education"
+                },
+                {
+                    "key": "coursera",
+                    "displayName": "Coursera",
+                    "category": "education"
+                },
+                {
+                    "key": "masterclass",
+                    "displayName": "MasterClass",
+                    "category": "education"
+                },
+                {
+                    "key": "skillshare",
+                    "displayName": "Skillshare",
+                    "category": "education"
+                },
+                {
+                    "key": "chegg",
+                    "displayName": "Chegg Study",
+                    "category": "education"
+                },
+                {
+                    "key": "grammarly",
+                    "displayName": "Grammarly",
+                    "category": "education"
+                }
+            ]
+        },
+        {
+            "key": "others",
+            "label": "Others",
+            "services": [
+                {
+                    "key": "tinder",
+                    "displayName": "Tinder",
+                    "category": "others"
+                },
+                {
+                    "key": "strava",
+                    "displayName": "Strava",
+                    "category": "others"
+                },
+                {
+                    "key": "nordvpn",
+                    "displayName": "NordVPN",
+                    "category": "others"
+                },
+                {
+                    "key": "calm",
+                    "displayName": "Calm",
+                    "category": "others"
+                },
+                {
+                    "key": "nyt",
+                    "displayName": "The New York Times",
+                    "category": "others"
+                },
+                {
+                    "key": "peloton",
+                    "displayName": "Peloton",
+                    "category": "others"
+                }
+            ]
+        }
+    ]
+}
