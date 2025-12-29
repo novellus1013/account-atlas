@@ -1,30 +1,31 @@
 import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
-import 'package:account_atlas/features/accounts/domain/usecases/get_all_accounts.dart';
+import 'package:account_atlas/features/accounts/domain/usecases/get_all_accounts_detail.dart';
 import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
-class AccountsViewModel {
-  final GetAllAccounts _getAllAccounts;
+class AccountsViewModel extends StateNotifier<AccountsState> {
+  final GetAllAccountsDetail _getAllAccountsDetail;
 
-  AccountsViewModel(this._getAllAccounts);
-
-  AccountsState _state = AccountsLoading();
-  AccountsState get state => _state;
+  AccountsViewModel(this._getAllAccountsDetail)
+    : super(const AccountsLoading()) {
+    load();
+  }
 
   Future<void> load() async {
-    _state = AccountsLoading();
+    state = const AccountsLoading();
 
     try {
-      final accounts = await _getAllAccounts.call();
+      final accounts = await _getAllAccountsDetail.call();
 
       if (accounts.isEmpty) {
-        _state = AccountsEmpty();
+        state = const AccountsEmpty();
       } else {
-        _state = AccountsLoaded(accounts);
+        state = AccountsLoaded(accounts);
       }
     } on AccountFailure catch (e) {
-      _state = AccountsError(e.message);
+      state = AccountsError(e.message);
     } catch (e) {
-      _state = AccountsError();
+      state = const AccountsError();
     }
   }
 }
