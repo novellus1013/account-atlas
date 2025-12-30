@@ -26,29 +26,39 @@ class MockDataSeeder {
     final accounts = [
       AccountLocalDto(
         identifier: 'coremagic@gmail.com',
-        provider: 'gmail',
+        provider: 'Gmail',
         createdAt: now
             .subtract(const Duration(days: 12))
             .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'nyamnyang@gmail.com',
-        provider: 'facebook',
+        provider: 'Facebook',
         createdAt: now.subtract(const Duration(days: 9)).millisecondsSinceEpoch,
       ),
       AccountLocalDto(
+        identifier: '01044332222',
+        provider: 'Whatsapp',
+        createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
+      ),
+      AccountLocalDto(
         identifier: 'smalltide@naver.com',
-        provider: 'naver',
+        provider: 'Email',
         createdAt: now.subtract(const Duration(days: 7)).millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'sosmayday@outlook.com',
-        provider: 'apple',
+        provider: 'Apple',
         createdAt: now.subtract(const Duration(days: 5)).millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'power2000@naver.com',
-        provider: 'github',
+        provider: 'Github',
+        createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
+      ),
+      AccountLocalDto(
+        identifier: 'corizaha@yahoo.com',
+        provider: 'Others',
         createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
       ),
     ];
