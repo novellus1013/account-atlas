@@ -1,17 +1,25 @@
 import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_all_accounts_detail.dart';
+import 'package:account_atlas/features/accounts/presentation/provider/accounts_provider.dart';
 import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountsViewModel extends StateNotifier<AccountsState> {
-  final GetAllAccountsDetail _getAllAccountsDetail;
+final accountsViewModelProvider =
+    NotifierProvider<AccountsViewModel, AccountsState>(AccountsViewModel.new);
 
-  AccountsViewModel(this._getAllAccountsDetail)
-    : super(const AccountsLoading()) {
-    load();
+class AccountsViewModel extends Notifier<AccountsState> {
+  late final GetAllAccountsDetail _getAllAccountsDetail;
+
+  AccountsViewModel();
+
+  @override
+  AccountsState build() {
+    _getAllAccountsDetail = ref.watch(getAllAccountsDetailProvider);
+    _load();
+    return const AccountsLoading();
   }
 
-  Future<void> load() async {
+  Future<void> _load() async {
     state = const AccountsLoading();
 
     try {

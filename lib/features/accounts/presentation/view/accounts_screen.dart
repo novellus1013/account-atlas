@@ -2,9 +2,13 @@ import 'package:account_atlas/core/constants/app_color.dart';
 import 'package:account_atlas/core/constants/app_spacing.dart';
 import 'package:account_atlas/core/theme/gaps.dart';
 import 'package:account_atlas/features/accounts/domain/accounts_enums.dart';
+import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
+import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 typedef AccountIconConfig = ({IconData icon, Color bg});
 
@@ -38,70 +42,51 @@ const Map<AccountProvider, AccountIconConfig> accountIconMap = {
   ),
 };
 
-class AccountsScreen extends StatelessWidget {
+class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(accountsViewModelProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text('My Accounts')),
         body: Padding(
           padding: EdgeInsets.all(AppSpacing.basic),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                //TODO: accounts를 전체 list를 얻고, map혹은 for in을 이용해 _AccountListItem으로 구성된 list 생성
-                _AccountListItem(
-                  identifier: "Hello@gmail.com",
-                  provider: AccountProvider.google,
-                  totalServices: 10,
-                  bill: 120,
-                  currency: Currency.ko,
-                ),
-                Gaps.v16,
-                _AccountListItem(
-                  identifier: "Hello@gmail.com",
-                  provider: AccountProvider.github,
-                  totalServices: 10,
-                  bill: 120,
-                  currency: Currency.ko,
-                ),
-                Gaps.v16,
-                _AccountListItem(
-                  identifier: "Hello@gmail.com",
-                  provider: AccountProvider.whatsapp,
-                  totalServices: 10,
-                  bill: 120,
-                  currency: Currency.ko,
-                ),
-                Gaps.v16,
-                _AccountListItem(
-                  identifier: "01044445555",
-                  provider: AccountProvider.phone,
-                  totalServices: 10,
-                  bill: 120,
-                  currency: Currency.ko,
-                ),
-                Gaps.v16,
-                _AccountListItem(
-                  identifier: "nice123@outlook.com",
-                  provider: AccountProvider.others,
-                  totalServices: 10,
-                  bill: 120,
-                  currency: Currency.ko,
-                ),
-                Gaps.v16,
-              ],
-            ),
-          ),
+          child: _buildBody(state),
         ),
       ),
     );
   }
 }
 
+Widget _buildBody(AccountsState state) {
+  return switch (state) {
+    AccountsLoading() => const Center(child: CircularProgressIndicator()),
+    AccountsEmpty() => const Center(child: Text('No accounts found.')),
+    AccountsError(message: final message) => Center(child: Text(message)),
+    AccountsLoaded(accounts: final accounts) => ListView.separated(
+      itemCount: accounts.length,
+      separatorBuilder: (context, index) => Gaps.v16,
+      itemBuilder: (context, index) {
+        final account = accounts[index];
+
+        return _AccountListItem(
+          accountId: account.accountId,
+          identifier: account.identifier,
+          provider: account.provider,
+          totalServices: account.totalServices,
+          bill: account.monthlyBill,
+          currency: account.currency,
+        );
+      },
+    ),
+  };
+}
+
 class _AccountListItem extends StatelessWidget {
+  final int accountId;
   final String identifier;
   final AccountProvider provider;
   final int totalServices;
@@ -114,6 +99,7 @@ class _AccountListItem extends StatelessWidget {
     required this.totalServices,
     required this.bill,
     required this.currency,
+    required this.accountId,
   });
 
   @override
@@ -122,12 +108,14 @@ class _AccountListItem extends StatelessWidget {
     final t = Theme.of(context).textTheme;
 
     //TODO: GoRouter를 활용해 account_detail_screen으로 이동
-    void onMoveDetail() {}
+    void onMoveDetail(int id) {
+      context.push('/accounts/$id');
+    }
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onMoveDetail,
+        onTap: () => onMoveDetail(accountId),
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,

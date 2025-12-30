@@ -1,7 +1,7 @@
 enum AccountProvider {
   email('Email'),
   phone('Phone'),
-  google('Google'),
+  google('Gmail'),
   apple('Apple'),
   github('Github'),
   facebook('Facebook'),

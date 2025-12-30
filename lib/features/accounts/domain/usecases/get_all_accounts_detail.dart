@@ -25,6 +25,7 @@ class GetAllAccountsDetail {
       if (services.isEmpty) {
         result.add(
           AccountsListItemReadModel(
+            accountId: accountId,
             identifier: account.identifier,
             provider: account.provider,
             totalServices: 0,
@@ -43,6 +44,7 @@ class GetAllAccountsDetail {
 
       result.add(
         AccountsListItemReadModel(
+          accountId: accountId,
           identifier: account.identifier,
           provider: account.provider,
           totalServices: services.length,
