@@ -1,6 +1,8 @@
 import 'package:account_atlas/features/accounts/data/datasources/account_local_datasource.dart';
 import 'package:account_atlas/features/accounts/data/repositories/account_repository_impl.dart';
 import 'package:account_atlas/features/accounts/domain/repositories/account_repository.dart';
+import 'package:account_atlas/features/accounts/domain/usecases/delete_account.dart';
+import 'package:account_atlas/features/accounts/domain/usecases/get_account_detail.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_all_accounts_detail.dart';
 import 'package:account_atlas/features/services/data/datasources/plan_local_datasource.dart';
 import 'package:account_atlas/features/services/data/datasources/service_local_datasource.dart';
@@ -27,11 +29,11 @@ final accountRepositoryProvider = Provider<AccountRepository>((ref) {
 });
 
 final serviceRepositoryProvider = Provider<ServiceRepository>((ref) {
-  return ServiceRepositoryImpl(ref.read(serviceLocalDatasourceProvider));
+  return ServiceRepositoryImpl(ref.watch(serviceLocalDatasourceProvider));
 });
 
 final planRepositoryProvider = Provider<PlanRepository>((ref) {
-  return PlanRepositoryImpl(ref.read(planLocalDatasourceProvider));
+  return PlanRepositoryImpl(ref.watch(planLocalDatasourceProvider));
 });
 
 final getAllAccountsDetailProvider = Provider<GetAllAccountsDetail>((ref) {
@@ -40,4 +42,16 @@ final getAllAccountsDetailProvider = Provider<GetAllAccountsDetail>((ref) {
     ref.watch(serviceRepositoryProvider),
     ref.watch(planRepositoryProvider),
   );
+});
+
+final getAccountDetailProvider = Provider<GetAccountDetail>((ref) {
+  return GetAccountDetail(
+    ref.watch(accountRepositoryProvider),
+    ref.watch(serviceRepositoryProvider),
+    ref.watch(planRepositoryProvider),
+  );
+});
+
+final deleteAccountDetailProvider = Provider<DeleteAccount>((ref) {
+  return DeleteAccount(ref.watch(accountRepositoryProvider));
 });

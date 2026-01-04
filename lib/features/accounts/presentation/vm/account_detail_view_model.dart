@@ -1,38 +1,57 @@
 import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/delete_account.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_account_detail.dart';
+import 'package:account_atlas/features/accounts/presentation/provider/accounts_provider.dart';
 import 'package:account_atlas/features/accounts/presentation/state/acccount_detail_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountDetailViewModel {
-  final GetAccountDetail _getAccountDetail;
-  final DeleteAccount _deleteAccount;
+final accountDetailViewModelProvider =
+    NotifierProvider.family<AccountDetailViewModel, AccountDetailState, int>(
+      AccountDetailViewModel.new,
+    );
 
-  AccountDetailViewModel(this._getAccountDetail, this._deleteAccount);
+class AccountDetailViewModel extends Notifier<AccountDetailState> {
+  final int _accountId;
 
-  AccountDetailState _state = AccountDetailLoading();
-  AccountDetailState get state => _state;
+  AccountDetailViewModel(this._accountId);
 
-  Future<void> load(int accountId) async {
-    _state = AccountDetailLoading();
+  late final GetAccountDetail _getAccountDetail;
+  late final DeleteAccount _deleteAccount;
+
+  @override
+  AccountDetailState build() {
+    _getAccountDetail = ref.watch(getAccountDetailProvider);
+    _deleteAccount = ref.watch(deleteAccountDetailProvider);
+
+    _load();
+
+    return const AccountDetailLoading();
+  }
+
+  Future<void> _load() async {
+    state = const AccountDetailLoading();
 
     try {
-      final detail = await _getAccountDetail.call(accountId);
+      final detail = await _getAccountDetail.call(_accountId);
 
-      _state = AccountDetailLoaded(detail);
+      state = AccountDetailLoaded(detail);
     } on AccountFailure catch (e) {
-      _state = AccountDetailError(e.message);
+      state = AccountDetailError(e.message);
     } catch (e) {
-      _state = AccountDetailError();
+      state = const AccountDetailError();
     }
   }
 
-  Future<void> delete(int accountId) async {
+  Future<void> refresh() async => _load();
+
+  Future<void> delete() async {
     try {
-      await _deleteAccount.call(accountId);
+      await _deleteAccount.call(_accountId);
+      state = const AccountDetailDeleted();
     } on AccountFailure catch (e) {
-      _state = AccountDetailError(e.message);
+      state = AccountDetailError(e.message);
     } catch (e) {
-      _state = AccountDetailError();
+      state = const AccountDetailError();
     }
   }
 }

@@ -56,7 +56,7 @@ enum ServiceCategory {
   sns('Sns'),
   ai('AI'),
   game('Game'),
-  education('Edu'),
+  education('Education'),
   others('Others');
 
   final String dbCode;

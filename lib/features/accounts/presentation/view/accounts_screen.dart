@@ -1,46 +1,15 @@
 import 'package:account_atlas/core/constants/app_color.dart';
 import 'package:account_atlas/core/constants/app_spacing.dart';
+import 'package:account_atlas/core/constants/app_text_sizes.dart';
 import 'package:account_atlas/core/theme/gaps.dart';
 import 'package:account_atlas/features/accounts/domain/accounts_enums.dart';
+import 'package:account_atlas/features/shared/account_icon_config.dart';
 import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
 import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-
-typedef AccountIconConfig = ({IconData icon, Color bg});
-
-//TODO: 나중에 ko도 만들 것
-const Map<AccountProvider, AccountIconConfig> accountIconMap = {
-  AccountProvider.email: (
-    icon: FontAwesomeIcons.envelope,
-    bg: AppColor.primary,
-  ),
-  AccountProvider.phone: (icon: FontAwesomeIcons.phone, bg: AppColor.secondary),
-  AccountProvider.google: (
-    icon: FontAwesomeIcons.google,
-    bg: Color(0xff4285F4),
-  ),
-  AccountProvider.apple: (icon: FontAwesomeIcons.apple, bg: Color(0xff000000)),
-  AccountProvider.github: (
-    icon: FontAwesomeIcons.github,
-    bg: Color(0xff181717),
-  ),
-  AccountProvider.facebook: (
-    icon: FontAwesomeIcons.facebook,
-    bg: Color(0xFF0866FF),
-  ),
-  AccountProvider.whatsapp: (
-    icon: FontAwesomeIcons.whatsapp,
-    bg: Color(0xFF25D366),
-  ),
-  AccountProvider.others: (
-    icon: FontAwesomeIcons.circleQuestion,
-    bg: Color(0xFF6D1ED4),
-  ),
-};
 
 class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
@@ -51,7 +20,12 @@ class AccountsScreen extends ConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('My Accounts')),
+        appBar: AppBar(
+          title: Text('My Accounts'),
+          centerTitle: false,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
         body: Padding(
           padding: EdgeInsets.all(AppSpacing.basic),
           child: _buildBody(state),
@@ -105,9 +79,7 @@ class _AccountListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currencyMark = currency == Currency.en ? '\$' : "₩";
-    final t = Theme.of(context).textTheme;
 
-    //TODO: GoRouter를 활용해 account_detail_screen으로 이동
     void onMoveDetail(int id) {
       context.push('/accounts/$id');
     }
@@ -138,12 +110,10 @@ class _AccountListItem extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    width: AppSpacing.xl + AppSpacing.xl,
-                    height: AppSpacing.xl + AppSpacing.xl,
+                    width: AppSpacing.xl + AppSpacing.lg,
+                    height: AppSpacing.xl + AppSpacing.lg,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        AppSpacing.xl + AppSpacing.xl,
-                      ),
+                      borderRadius: BorderRadius.circular(AppSpacing.basic),
                       color: accountIconMap[provider]!.bg,
                     ),
                     child: Center(
@@ -155,36 +125,62 @@ class _AccountListItem extends StatelessWidget {
                     ),
                   ),
                   Gaps.h16,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(identifier, style: t.titleSmall),
-                      Gaps.v8,
-                      Container(
-                        padding: EdgeInsets.all(AppSpacing.xs),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(AppSpacing.xs),
-                          color: accountIconMap[provider]!.bg,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          identifier,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.black,
+                          ),
                         ),
-                        child: Text(
+                        Gaps.v8,
+                        Text(
                           provider.dbCode,
                           style: TextStyle(
-                            color: AppColor.white,
+                            fontSize: AppTextSizes.sm,
+                            color: accountIconMap[provider]!.bg,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  const Icon(Icons.chevron_right, color: Colors.grey),
                 ],
               ),
               Gaps.v24,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('$totalServices services'),
-                  Text('$currencyMark$bill / mo'),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.md,
+                  horizontal: AppSpacing.basic,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColor.backgroundGrey,
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$totalServices services',
+                      style: const TextStyle(
+                        color: AppColor.textGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '$currencyMark${bill.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')} / mo',
+                      style: const TextStyle(
+                        color: AppColor.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

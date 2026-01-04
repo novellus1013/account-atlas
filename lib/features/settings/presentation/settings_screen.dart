@@ -114,6 +114,7 @@ class _SettingItem extends StatelessWidget {
     required this.title,
     this.subText,
     this.onTap,
+    // ignore: unused_element_parameter
     this.color,
   });
 

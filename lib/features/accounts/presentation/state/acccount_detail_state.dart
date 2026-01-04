@@ -4,7 +4,9 @@ sealed class AccountDetailState {
   const AccountDetailState();
 }
 
-class AccountDetailLoading extends AccountDetailState {}
+class AccountDetailLoading extends AccountDetailState {
+  const AccountDetailLoading();
+}
 
 class AccountDetailError extends AccountDetailState {
   final String message;
@@ -14,4 +16,8 @@ class AccountDetailError extends AccountDetailState {
 class AccountDetailLoaded extends AccountDetailState {
   final AccountDetailReadModel account;
   const AccountDetailLoaded(this.account);
+}
+
+class AccountDetailDeleted extends AccountDetailState {
+  const AccountDetailDeleted();
 }
