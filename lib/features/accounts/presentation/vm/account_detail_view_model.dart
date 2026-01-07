@@ -1,8 +1,9 @@
 import 'package:account_atlas/features/accounts/domain/failure/account_failure.dart';
-import 'package:account_atlas/features/accounts/domain/usecases/delete_account.dart';
+import 'package:account_atlas/features/accounts/domain/usecases/delete_account_with_services.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_account_detail.dart';
 import 'package:account_atlas/features/accounts/presentation/provider/accounts_provider.dart';
 import 'package:account_atlas/features/accounts/presentation/state/acccount_detail_state.dart';
+import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final accountDetailViewModelProvider =
@@ -15,14 +16,12 @@ class AccountDetailViewModel extends Notifier<AccountDetailState> {
 
   AccountDetailViewModel(this._accountId);
 
-  late final GetAccountDetail _getAccountDetail;
-  late final DeleteAccount _deleteAccount;
+  GetAccountDetail get _getAccountDetail => ref.watch(getAccountDetailProvider);
+  DeleteAccountWithServices get _deleteAccount =>
+      ref.watch(deleteAccountDetailProvider);
 
   @override
   AccountDetailState build() {
-    _getAccountDetail = ref.watch(getAccountDetailProvider);
-    _deleteAccount = ref.watch(deleteAccountDetailProvider);
-
     _load();
 
     return const AccountDetailLoading();
@@ -42,12 +41,11 @@ class AccountDetailViewModel extends Notifier<AccountDetailState> {
     }
   }
 
-  Future<void> refresh() async => _load();
-
   Future<void> delete() async {
     try {
       await _deleteAccount.call(_accountId);
       state = const AccountDetailDeleted();
+      ref.invalidate(accountsViewModelProvider);
     } on AccountFailure catch (e) {
       state = AccountDetailError(e.message);
     } catch (e) {

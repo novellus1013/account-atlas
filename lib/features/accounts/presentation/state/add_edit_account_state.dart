@@ -4,7 +4,14 @@ sealed class AddEditAccountState {
   const AddEditAccountState();
 }
 
-class AddEditAccountLoading extends AddEditAccountState {}
+class AddEditAccountLoading extends AddEditAccountState {
+  const AddEditAccountLoading();
+}
+
+class AddEditAccountSaving extends AddEditAccountState {
+  final AccountEntity? account;
+  const AddEditAccountSaving([this.account]);
+}
 
 class AddEditAccountError extends AddEditAccountState {
   final String message;

@@ -9,6 +9,7 @@ import 'package:account_atlas/features/services/presentation/view/add_edit_servi
 import 'package:account_atlas/features/services/presentation/view/service_detail_screen.dart';
 import 'package:account_atlas/features/services/presentation/view/services_screen.dart';
 import 'package:account_atlas/features/settings/presentation/settings_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -26,20 +27,23 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               //account table의 id
-              path: ':id',
+              path: ':id/detail',
               builder: (context, state) => AccountDetailScreen(
-                id: state.pathParameters['id']!,
+                accountId: int.parse(state.pathParameters['id']!),
               ), //특정 accounts에 속한 services list
             ),
             GoRoute(
               path: 'add',
-              builder: (context, state) => AddEditAccountScreen(),
+              builder: (context, state) =>
+                  AddEditAccountScreen(key: UniqueKey()),
             ),
             GoRoute(
               //accounts table의 id
               path: ':id/edit',
-              builder: (context, state) =>
-                  AddEditAccountScreen(id: state.pathParameters['id']!),
+              builder: (context, state) => AddEditAccountScreen(
+                key: UniqueKey(),
+                id: state.pathParameters['id']!,
+              ),
             ),
           ],
         ),
@@ -53,7 +57,10 @@ final GoRouter appRouter = GoRouter(
                 id: state.pathParameters['id']!,
               ), //특정 service의 detail 정보
             ),
-            GoRoute(path: 'add', builder: (context, state) => ServicesScreen()),
+            GoRoute(
+              path: 'add',
+              builder: (context, state) => AddEditServiceScreen(),
+            ),
             GoRoute(
               //services table의 id
               path: 'edit/:id',

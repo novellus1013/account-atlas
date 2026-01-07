@@ -5,54 +5,84 @@ import 'package:account_atlas/features/accounts/domain/failure/account_failure.d
 import 'package:account_atlas/features/accounts/domain/usecases/create_account.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/get_account_by_id.dart';
 import 'package:account_atlas/features/accounts/domain/usecases/update_account.dart';
+import 'package:account_atlas/features/accounts/presentation/provider/accounts_provider.dart';
 import 'package:account_atlas/features/accounts/presentation/state/add_edit_account_state.dart';
+import 'package:account_atlas/features/accounts/presentation/vm/account_detail_view_model.dart';
+import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddEditAccountViewModel {
-  final CreateAccount _createAccount;
-  final UpdateAccount _updateAccount;
-  final GetAccountById _getAccountById;
+final addEditAccountViewModelProvider =
+    NotifierProvider.family<AddEditAccountViewModel, AddEditAccountState, int?>(
+      AddEditAccountViewModel.new,
+    );
 
-  AddEditAccountViewModel(
-    this._createAccount,
-    this._updateAccount,
-    this._getAccountById,
-  );
+class AddEditAccountViewModel extends Notifier<AddEditAccountState> {
+  final int? _accountId;
 
-  AddEditAccountState _state = AddEditAccountLoading();
-  AddEditAccountState get state => _state;
+  AddEditAccountViewModel(this._accountId);
 
-  Future<void> load(int accountId) async {
-    _state = AddEditAccountLoading();
+  CreateAccount get _createAccount => ref.watch(createAccountProvider);
+  UpdateAccount get _updateAccount => ref.watch(updateAccountProvider);
+  GetAccountById get _getAccountById => ref.watch(getAccountByIdProvider);
+
+  @override
+  AddEditAccountState build() {
+    if (_accountId != null) {
+      _load();
+      return AddEditAccountLoading();
+    }
+
+    return const AddEditAccountLoaded(null);
+  }
+
+  Future<void> _load() async {
+    state = const AddEditAccountLoading();
 
     try {
-      final account = await _getAccountById.call(accountId);
-      _state = AddEditAccountLoaded(account);
+      final account = await _getAccountById.call(_accountId!);
+      state = AddEditAccountLoaded(account);
     } on AccountFailure catch (e) {
-      _state = AddEditAccountError(e.message);
+      state = AddEditAccountError(e.message);
     } catch (e) {
-      _state = AddEditAccountError();
+      state = AddEditAccountError();
     }
   }
 
   Future<void> create(AccountEntity account) async {
+    state = AddEditAccountSaving(account);
+
     try {
-      await _createAccount.call(account);
-      _state = AddEditAccountLoaded(account);
+      final newId = await _createAccount.call(account);
+      state = AddEditAccountLoaded(
+        AccountEntity(
+          id: newId,
+          identifier: account.identifier,
+          provider: account.provider,
+          createdAt: account.createdAt,
+        ),
+      );
+      ref.invalidate(accountsViewModelProvider);
     } on AccountFailure catch (e) {
-      _state = AddEditAccountError(e.message);
+      state = AddEditAccountError(e.message);
     } catch (e) {
-      _state = AddEditAccountError();
+      state = AddEditAccountError();
     }
   }
 
   Future<void> update(AccountEntity account) async {
+    state = AddEditAccountSaving(account);
+
     try {
       await _updateAccount.call(account);
-      _state = AddEditAccountLoaded(account);
+      state = AddEditAccountLoaded(account);
+      ref.invalidate(accountsViewModelProvider);
+      if (_accountId != null) {
+        ref.invalidate(accountDetailViewModelProvider(_accountId));
+      }
     } on AccountFailure catch (e) {
-      _state = AddEditAccountError(e.message);
+      state = AddEditAccountError(e.message);
     } catch (e) {
-      _state = AddEditAccountError();
+      state = AddEditAccountError();
     }
   }
 }

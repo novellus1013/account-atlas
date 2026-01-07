@@ -8,13 +8,13 @@ final accountsViewModelProvider =
     NotifierProvider<AccountsViewModel, AccountsState>(AccountsViewModel.new);
 
 class AccountsViewModel extends Notifier<AccountsState> {
-  late final GetAllAccountsDetail _getAllAccountsDetail;
-
   AccountsViewModel();
+
+  GetAllAccountsDetail get _getAllAccountsDetail =>
+      ref.watch(getAllAccountsDetailProvider);
 
   @override
   AccountsState build() {
-    _getAllAccountsDetail = ref.watch(getAllAccountsDetailProvider);
     _load();
     return const AccountsLoading();
   }

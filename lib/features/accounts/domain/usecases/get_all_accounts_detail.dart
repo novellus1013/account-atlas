@@ -33,6 +33,7 @@ class GetAllAccountsDetail {
             currency: Currency.en,
           ),
         );
+        continue;
       }
 
       int monthlyBill = 0;

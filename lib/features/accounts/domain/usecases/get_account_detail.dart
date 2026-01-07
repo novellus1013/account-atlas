@@ -42,30 +42,28 @@ class GetAccountDetail {
     final List<ServiceDetailReadModel> paid = [];
     final List<ServiceDetailReadModel> free = [];
 
-    final Map<Currency, int> monthlyBillByCurrency = {};
+    int monthlyBillByCurrency = 0;
 
-    for (final s in services) {
-      final sid = s.id;
+    for (final service in services) {
+      final serviceId = service.id;
 
-      // 서비스가 DB에 존재하면 id는 있어야 정상.
-      // 방어적으로 처리만 해둠.
-      if (sid == null) {
-        free.add(ServiceDetailReadModel(service: s, plan: null));
+      if (serviceId == null) {
         continue;
       }
 
-      final PlanEntity plan = await _planRepo.getPlanByAccountServiceId(sid);
+      final PlanEntity plan = await _planRepo.getPlanByAccountServiceId(
+        serviceId,
+      );
 
-      final rm = ServiceDetailReadModel(service: s, plan: plan);
+      final rm = ServiceDetailReadModel(service: service, plan: plan);
 
-      if (s.isPay) {
+      if (service.isPay) {
         paid.add(rm);
 
         // 월 합계 계산: billingCycle에 따라 월 기준 환산
         final p = plan;
         final monthly = _toMonthlyAmount(p.amount, p.billingCycle);
-        monthlyBillByCurrency[p.currency] =
-            (monthlyBillByCurrency[p.currency] ?? 0) + monthly;
+        monthlyBillByCurrency += monthly;
       } else {
         free.add(rm);
       }

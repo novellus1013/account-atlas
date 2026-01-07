@@ -3,6 +3,7 @@ import 'package:account_atlas/core/constants/app_spacing.dart';
 import 'package:account_atlas/core/constants/app_text_sizes.dart';
 import 'package:account_atlas/core/theme/gaps.dart';
 import 'package:account_atlas/features/accounts/domain/accounts_enums.dart';
+import 'package:account_atlas/features/accounts/presentation/widget/icon_box.dart';
 import 'package:account_atlas/features/shared/account_icon_config.dart';
 import 'package:account_atlas/features/accounts/presentation/state/accounts_state.dart';
 import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
@@ -25,6 +26,12 @@ class AccountsScreen extends ConsumerWidget {
           centerTitle: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add, color: AppColor.primary),
+              onPressed: () => context.push('/accounts/add'),
+            ),
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.all(AppSpacing.basic),
@@ -81,7 +88,7 @@ class _AccountListItem extends StatelessWidget {
     final currencyMark = currency == Currency.en ? '\$' : "₩";
 
     void onMoveDetail(int id) {
-      context.push('/accounts/$id');
+      context.push('/accounts/$id/detail');
     }
 
     return Material(
@@ -109,20 +116,9 @@ class _AccountListItem extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: AppSpacing.xl + AppSpacing.lg,
-                    height: AppSpacing.xl + AppSpacing.lg,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppSpacing.basic),
-                      color: accountIconMap[provider]!.bg,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        accountIconMap[provider]!.icon,
-                        size: AppSpacing.xl,
-                        color: AppColor.white,
-                      ),
-                    ),
+                  IconBox(
+                    color: accountIconMap[provider]!.bg,
+                    icon: accountIconMap[provider]!.icon,
                   ),
                   Gaps.h16,
                   Expanded(
