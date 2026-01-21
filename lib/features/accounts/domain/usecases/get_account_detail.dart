@@ -22,6 +22,7 @@ import 'package:account_atlas/features/accounts/domain/models/account_detail_rea
 import 'package:account_atlas/features/accounts/domain/repositories/account_repository.dart';
 import 'package:account_atlas/features/services/domain/entities/plan_entity.dart';
 import 'package:account_atlas/features/services/domain/entities/service_entity.dart';
+import 'package:account_atlas/features/services/domain/failure/plan_failure.dart';
 import 'package:account_atlas/features/services/domain/repositories/plan_repository.dart';
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
@@ -51,20 +52,27 @@ class GetAccountDetail {
         continue;
       }
 
-      final PlanEntity plan = await _planRepo.getPlanByAccountServiceId(
-        serviceId,
-      );
-
-      final rm = ServiceDetailReadModel(service: service, plan: plan);
-
       if (service.isPay) {
+        // Only fetch plan for paid services
+        PlanEntity? plan;
+        try {
+          plan = await _planRepo.getPlanByAccountServiceId(serviceId);
+        } on PlanNotFound {
+          // Paid service without a plan yet - treat as no plan
+          plan = null;
+        }
+
+        final rm = ServiceDetailReadModel(service: service, plan: plan);
         paid.add(rm);
 
-        // 월 합계 계산: billingCycle에 따라 월 기준 환산
-        final p = plan;
-        final monthly = _toMonthlyAmount(p.amount, p.billingCycle);
-        monthlyBillByCurrency += monthly;
+        // Calculate monthly bill if plan exists
+        if (plan != null) {
+          final monthly = _toMonthlyAmount(plan.amount, plan.billingCycle);
+          monthlyBillByCurrency += monthly;
+        }
       } else {
+        // Free service - no plan needed
+        final rm = ServiceDetailReadModel(service: service, plan: null);
         free.add(rm);
       }
     }

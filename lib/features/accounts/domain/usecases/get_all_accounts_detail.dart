@@ -1,5 +1,6 @@
 import 'package:account_atlas/features/accounts/domain/models/accounts_list_item_read_model.dart';
 import 'package:account_atlas/features/accounts/domain/repositories/account_repository.dart';
+import 'package:account_atlas/features/services/domain/failure/plan_failure.dart';
 import 'package:account_atlas/features/services/domain/repositories/plan_repository.dart';
 import 'package:account_atlas/features/services/domain/repositories/service_repository.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
@@ -39,8 +40,15 @@ class GetAllAccountsDetail {
       int monthlyBill = 0;
 
       for (final service in services) {
-        final plan = await _planRepo.getPlanByAccountServiceId(service.id!);
-        monthlyBill += plan.amount;
+        // Only fetch plan for services that are marked as paid subscriptions
+        if (service.isPay && service.id != null) {
+          try {
+            final plan = await _planRepo.getPlanByAccountServiceId(service.id!);
+            monthlyBill += plan.amount;
+          } on PlanNotFound {
+            // Service is marked as paid but has no plan yet - skip
+          }
+        }
       }
 
       result.add(

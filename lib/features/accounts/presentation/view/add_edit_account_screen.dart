@@ -26,7 +26,6 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
   bool get _isEditMode => _accountId != null;
 
   bool _isInitialized = false;
-  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -170,8 +169,6 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
 
   Future<void> _handleSave(AccountEntity? loadedAccount) async {
     if (!_formKey.currentState!.validate()) return;
-
-    _isSaving = true;
 
     final notifier = ref.read(
       addEditAccountViewModelProvider(_accountId).notifier,

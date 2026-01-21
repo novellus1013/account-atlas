@@ -7,84 +7,115 @@ import 'package:account_atlas/features/accounts/data/repositories/service_catalo
 import 'package:account_atlas/features/accounts/domain/models/account_detail_read_model.dart';
 import 'package:account_atlas/features/accounts/presentation/state/acccount_detail_state.dart';
 import 'package:account_atlas/features/accounts/presentation/vm/account_detail_view_model.dart';
+import 'package:account_atlas/features/home/presentation/vm/home_view_model.dart';
 import 'package:account_atlas/features/services/domain/services_enums.dart';
 import 'package:account_atlas/features/services/presentation/provider/service_catalog_provider.dart';
 import 'package:account_atlas/features/shared/account_icon_config.dart';
 import 'package:account_atlas/features/shared/service_category_icon.dart';
+import 'package:account_atlas/features/shared/widgets/action_buttons_bar.dart';
+import 'package:account_atlas/features/shared/widgets/state_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class AccountDetailScreen extends ConsumerWidget {
+class AccountDetailScreen extends ConsumerStatefulWidget {
   final int accountId;
   const AccountDetailScreen({super.key, required this.accountId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final accountState = ref.watch(accountDetailViewModelProvider(accountId));
+  ConsumerState<AccountDetailScreen> createState() =>
+      _AccountDetailScreenState();
+}
+
+class _AccountDetailScreenState extends ConsumerState<AccountDetailScreen> {
+  int get _accountId => widget.accountId;
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirm = await showWarningPopDialog(
+      context,
+      'Delete account',
+      'This will remove the account and all services tied to it.',
+      'Delete',
+    );
+
+    if (confirm != true || !context.mounted) return;
+
+    await ref
+        .read(accountDetailViewModelProvider(_accountId).notifier)
+        .delete();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accountState = ref.watch(accountDetailViewModelProvider(_accountId));
     final catalogState = ref.watch(serviceCatalogProvider);
 
-    ref.listen(accountDetailViewModelProvider(accountId), (previous, next) {
+    ref.listen(accountDetailViewModelProvider(_accountId), (previous, next) {
       if (next is AccountDetailDeleted && context.mounted) {
+        ref.invalidate(homeViewModelProvider);
         context.pop();
       }
     });
 
-    Future<void> confirmDelete(BuildContext context) async {
-      final title = 'Delete account';
-      final main = 'This will remove the account and all services tied to it.';
-      final btn = 'Delete';
-      final confirm = await showWarningPopDialog(context, title, main, btn);
-
-      if (confirm != true) {
-        return;
-      }
-
-      await ref
-          .read(accountDetailViewModelProvider(accountId).notifier)
-          .delete();
-    }
-
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.edit, color: AppColor.primary),
-              onPressed: () => context.push('/accounts/$accountId/edit'),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: AppColor.error),
-              onPressed: () => confirmDelete(context),
-            ),
-          ],
+    return Scaffold(
+      backgroundColor: AppColor.grey50,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
         ),
-        body: _buildBody(
+      ),
+      body: SafeArea(
+        child: _buildBody(
           accountState: accountState,
           catalogState: catalogState,
         ),
       ),
     );
   }
-}
 
-Widget _buildBody({
-  required AccountDetailState accountState,
-  required AsyncValue<Map<String, ServiceCatalogItem>> catalogState,
-}) {
-  return switch (accountState) {
-    AccountDetailLoading() => const Center(child: CircularProgressIndicator()),
-    AccountDetailError(message: final message) => Center(child: Text(message)),
-    AccountDetailDeleted() => const Center(child: Text('Account deleted.')),
-    AccountDetailLoaded(account: final account) => catalogState.when(
-      data: (catalog) =>
-          _AccountDetailContent(account: account, catalog: catalog),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(child: Text('Error: $error')),
-    ),
-  };
+  Widget _buildBody({
+    required AccountDetailState accountState,
+    required AsyncValue<Map<String, ServiceCatalogItem>> catalogState,
+  }) {
+    return switch (accountState) {
+      AccountDetailLoading() => const LoadingStateWidget(),
+      AccountDetailError(message: final message) => ErrorStateWidget(
+        title: 'Error loading account',
+        message: message,
+        onRetry: () =>
+            ref.invalidate(accountDetailViewModelProvider(_accountId)),
+      ),
+      AccountDetailDeleted() => const Center(child: Text('Account deleted.')),
+      AccountDetailLoaded(account: final account) => catalogState.when(
+        data: (catalog) => _buildContent(account, catalog),
+        loading: () => const LoadingStateWidget(),
+        error: (error, _) => ErrorStateWidget(
+          title: 'Error loading catalog',
+          message: error.toString(),
+        ),
+      ),
+    };
+  }
+
+  Widget _buildContent(
+    AccountDetailReadModel account,
+    Map<String, ServiceCatalogItem> catalog,
+  ) {
+    return Column(
+      children: [
+        Expanded(
+          child: _AccountDetailContent(account: account, catalog: catalog),
+        ),
+        ActionButtonsBar(
+          onEdit: () => context.push('/accounts/$_accountId/edit'),
+          onDelete: () => _confirmDelete(context),
+        ),
+      ],
+    );
+  }
 }
 
 class _AccountDetailContent extends StatelessWidget {
@@ -102,50 +133,20 @@ class _AccountDetailContent extends StatelessWidget {
     );
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(AppSpacing.lg),
-            decoration: BoxDecoration(
-              color: config?.bg ?? AppColor.primary,
-              borderRadius: BorderRadius.circular(AppSpacing.xl),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  config?.icon ?? Icons.account_circle,
-                  color: Colors.white,
-                  size: 40,
-                ),
-                Gaps.v16,
-                Text(
-                  account.account.identifier,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Gaps.v24,
-                const Divider(color: Colors.white24),
-                Gaps.v16,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _SummaryItem(label: 'Monthly Bill', value: summaryText!),
-                    _SummaryItem(
-                      label: 'Provider',
-                      value: account.account.provider.dbCode,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          // Account Header Card
+          _AccountHeaderCard(
+            identifier: account.account.identifier,
+            provider: account.account.provider.dbCode,
+            monthlyBill: summaryText ?? '\$0',
+            iconConfig: config,
           ),
           Gaps.v32,
+
+          // Subscription Services Section
           _SectionHeader(
             title: 'Subscription Services',
             count: account.paidServices.length,
@@ -155,6 +156,8 @@ class _AccountDetailContent extends StatelessWidget {
             (s) => _ServiceTile(service: s, catalog: catalog),
           ),
           Gaps.v32,
+
+          // Free Services Section
           _SectionHeader(
             title: 'Free Services',
             count: account.freeServices.length,
@@ -163,8 +166,61 @@ class _AccountDetailContent extends StatelessWidget {
           ...account.freeServices.map(
             (s) => _ServiceTile(service: s, catalog: catalog),
           ),
-          Gaps.v32,
-          Gaps.v8,
+          Gaps.v40,
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountHeaderCard extends StatelessWidget {
+  final String identifier;
+  final String provider;
+  final String monthlyBill;
+  final AccountIconConfig? iconConfig;
+
+  const _AccountHeaderCard({
+    required this.identifier,
+    required this.provider,
+    required this.monthlyBill,
+    this.iconConfig,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: iconConfig?.bg ?? AppColor.primary,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            iconConfig?.icon ?? Icons.account_circle,
+            color: AppColor.white,
+            size: AppSpacing.iconXl,
+          ),
+          Gaps.v16,
+          Text(
+            identifier,
+            style: const TextStyle(
+              color: AppColor.white,
+              fontSize: AppTextSizes.xl,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Gaps.v24,
+          const Divider(color: Colors.white24),
+          Gaps.v16,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _SummaryItem(label: 'Monthly Bill', value: monthlyBill),
+              _SummaryItem(label: 'Provider', value: provider),
+            ],
+          ),
         ],
       ),
     );
@@ -184,8 +240,8 @@ class _SummaryItem extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: AppColor.backgroundGrey,
-            fontSize: AppSpacing.md,
+            color: AppColor.grey200,
+            fontSize: AppTextSizes.sm,
           ),
         ),
         Gaps.v4,
@@ -194,7 +250,7 @@ class _SummaryItem extends StatelessWidget {
           style: const TextStyle(
             color: AppColor.white,
             fontWeight: FontWeight.bold,
-            fontSize: AppSpacing.basic,
+            fontSize: AppTextSizes.base,
           ),
         ),
       ],
@@ -216,8 +272,9 @@ class _SectionHeader extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontSize: AppSpacing.basic,
+            fontSize: AppTextSizes.base,
             fontWeight: FontWeight.bold,
+            color: AppColor.grey900,
           ),
         ),
         Container(
@@ -226,14 +283,15 @@ class _SectionHeader extends StatelessWidget {
             vertical: AppSpacing.xs,
           ),
           decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppSpacing.md),
+            color: AppColor.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
           child: Text(
             '$count items',
             style: const TextStyle(
-              color: Colors.blue,
+              color: AppColor.primary,
               fontWeight: FontWeight.bold,
+              fontSize: AppTextSizes.sm,
             ),
           ),
         ),
@@ -251,44 +309,35 @@ class _ServiceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconConfig = _resolveServiceIcon(service, catalog);
-
-    String? billingText = '';
-    String? priceText = '';
-
-    if (service.isPay && service.nextBillingDate != null) {
-      billingText = billingTextFormatter(service.nextBillingDate!);
-    } else {
-      billingText = null;
-    }
-
-    if (service.isPay && service.amount != null && service.currency != null) {
-      priceText = priceTextFormatter(service.amount!, service.currency!);
-    } else {
-      priceText = null;
-    }
+    final billingText = _getBillingText();
+    final priceText = _getPriceText();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(AppSpacing.basic),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.basic),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        border: Border.all(color: AppColor.grey200.withValues(alpha: 0.5)),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () => context.push('/services/details/${service.service.id}'),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
         child: Row(
           children: [
+            // Service Icon
             Container(
-              width: AppSpacing.xl + AppSpacing.lg,
-              height: AppSpacing.xl + AppSpacing.lg,
+              width: AppSpacing.icon56,
+              height: AppSpacing.icon56,
               decoration: BoxDecoration(
                 color: iconConfig.backgroundColor,
-                borderRadius: BorderRadius.circular(AppSpacing.basic),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Center(child: iconConfig.icon),
             ),
             Gaps.h16,
+
+            // Service Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,33 +346,55 @@ class _ServiceTile extends StatelessWidget {
                     service.displayName,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: AppSpacing.basic,
+                      fontSize: AppTextSizes.base,
+                      color: AppColor.grey900,
                     ),
                   ),
                   if (billingText != null)
                     Text(
                       billingText,
                       style: const TextStyle(
-                        color: Colors.grey,
+                        color: AppColor.grey500,
                         fontSize: AppTextSizes.sm,
                       ),
                     ),
                 ],
               ),
             ),
+
+            // Price
             Text(
-              priceText ?? 'none',
-              style: const TextStyle(
-                color: AppColor.error,
+              priceText ?? 'Free',
+              style: TextStyle(
+                color: priceText != null ? AppColor.error : AppColor.success,
                 fontWeight: FontWeight.bold,
+                fontSize: AppTextSizes.md,
               ),
             ),
             Gaps.h8,
-            const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: AppSpacing.iconSm,
+              color: AppColor.grey400,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  String? _getBillingText() {
+    if (service.isPay && service.nextBillingDate != null) {
+      return billingTextFormatter(service.nextBillingDate!);
+    }
+    return null;
+  }
+
+  String? _getPriceText() {
+    if (service.isPay && service.amount != null && service.currency != null) {
+      return priceTextFormatter(service.amount!, service.currency!);
+    }
+    return null;
   }
 }
 
@@ -331,7 +402,10 @@ class _ServiceIconConfig {
   final Widget icon;
   final Color backgroundColor;
 
-  const _ServiceIconConfig({required this.icon, required this.backgroundColor});
+  const _ServiceIconConfig({
+    required this.icon,
+    required this.backgroundColor,
+  });
 }
 
 _ServiceIconConfig _resolveServiceIcon(
@@ -348,15 +422,17 @@ _ServiceIconConfig _resolveServiceIcon(
       icon: SizedBox(
         width: AppSpacing.xl,
         height: AppSpacing.xl,
-        child: Image.asset('assets/logos/$iconKey.png', color: AppColor.white),
+        child: Image.asset(
+          'assets/logos/$iconKey.png',
+          color: AppColor.white,
+        ),
       ),
       backgroundColor: iconColor != null ? Color(iconColor) : AppColor.black,
     );
   }
 
   return _ServiceIconConfig(
-    icon:
-        serviceCategoryIcon[categoryKey] ??
+    icon: serviceCategoryIcon[categoryKey] ??
         const Icon(Icons.category, color: AppColor.white),
     backgroundColor: AppColor.black,
   );
