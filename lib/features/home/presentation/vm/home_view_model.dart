@@ -1,32 +1,39 @@
-import 'package:account_atlas/features/analystics/domain/usecases/get_category_spending.dart';
-import 'package:account_atlas/features/analystics/domain/usecases/get_monthy_yearly_spending.dart';
-import 'package:account_atlas/features/analystics/domain/usecases/get_upcoming_spending.dart';
+import 'package:account_atlas/features/home/domain/usecases/get_home_summary.dart';
+import 'package:account_atlas/features/home/presentation/provider/home_provider.dart';
 import 'package:account_atlas/features/home/presentation/state/home_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeViewModel {
-  final GetCategorySpending _getCategorySpending;
-  final GetMonthyYearlySpending _getMonthyYearlySpending;
-  final GetUpcomingSpending _getUpcomingSpending;
+final homeViewModelProvider =
+    NotifierProvider<HomeViewModel, HomeState>(HomeViewModel.new);
 
-  HomeViewModel(
-    this._getCategorySpending,
-    this._getMonthyYearlySpending,
-    this._getUpcomingSpending,
-  );
+class HomeViewModel extends Notifier<HomeState> {
+  HomeViewModel();
 
-  HomeState _state = HomeLoading();
-  HomeState get state => _state;
+  GetHomeSummary get _getHomeSummary => ref.watch(getHomeSummaryProvider);
 
-  Future<void> load() async {
-    _state = HomeLoading();
+  @override
+  HomeState build() {
+    _load();
+    return const HomeLoading();
+  }
+
+  Future<void> _load() async {
+    state = const HomeLoading();
+
     try {
-      final categories = await _getCategorySpending.call();
-      final monthlyYearly = await _getMonthyYearlySpending.call();
-      final upcomings = await _getUpcomingSpending.call();
+      final summary = await _getHomeSummary.call();
 
-      _state = HomeLoaded(categories, monthlyYearly, upcomings);
+      if (summary.totalServiceCount == 0) {
+        state = const HomeEmpty();
+      } else {
+        state = HomeLoaded(summary);
+      }
     } catch (e) {
-      _state = HomeError();
+      state = HomeError('Error: ${e.toString()}');
     }
+  }
+
+  Future<void> refresh() async {
+    await _load();
   }
 }

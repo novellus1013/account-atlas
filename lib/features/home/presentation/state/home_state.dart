@@ -1,12 +1,16 @@
-import 'package:account_atlas/features/analystics/domain/entities/category_spending_entity.dart';
-import 'package:account_atlas/features/analystics/domain/entities/monthly_yearly_spending_entity.dart';
-import 'package:account_atlas/features/analystics/domain/entities/upcoming_spending_entity.dart';
+import 'package:account_atlas/features/home/domain/models/home_summary_read_model.dart';
 
 sealed class HomeState {
   const HomeState();
 }
 
-class HomeLoading extends HomeState {}
+class HomeLoading extends HomeState {
+  const HomeLoading();
+}
+
+class HomeEmpty extends HomeState {
+  const HomeEmpty();
+}
 
 class HomeError extends HomeState {
   final String message;
@@ -14,8 +18,6 @@ class HomeError extends HomeState {
 }
 
 class HomeLoaded extends HomeState {
-  final List<CategorySpendingEntity> categories;
-  final MonthlyYearlySpendingEntity monthlyYearly;
-  final List<UpcomingSpendingEntity> upcomings;
-  const HomeLoaded(this.categories, this.monthlyYearly, this.upcomings);
+  final HomeSummaryReadModel summary;
+  const HomeLoaded(this.summary);
 }
