@@ -4,9 +4,13 @@ sealed class ServicesState {
   const ServicesState();
 }
 
-class ServicesLoading extends ServicesState {}
+class ServicesLoading extends ServicesState {
+  const ServicesLoading();
+}
 
-class ServicesEmpty extends ServicesState {}
+class ServicesEmpty extends ServicesState {
+  const ServicesEmpty();
+}
 
 class ServicesError extends ServicesState {
   String message;

@@ -4,7 +4,15 @@ sealed class AddEditServiceState {
   const AddEditServiceState();
 }
 
-class AddEditServiceLoading extends AddEditServiceState {}
+class AddEditServiceLoading extends AddEditServiceState {
+  const AddEditServiceLoading();
+}
+
+class AddEditServiceSaving extends AddEditServiceState {
+  final ServiceDetailReadModel? service;
+
+  const AddEditServiceSaving([this.service]);
+}
 
 class AddEditServiceError extends AddEditServiceState {
   String message;
@@ -13,7 +21,6 @@ class AddEditServiceError extends AddEditServiceState {
 
 class AddEditServiceLoaded extends AddEditServiceState {
   //service가 존재하면 edit, 없으면 create
-  final ServiceDetailReadModel service;
-
+  final ServiceDetailReadModel? service;
   const AddEditServiceLoaded(this.service);
 }

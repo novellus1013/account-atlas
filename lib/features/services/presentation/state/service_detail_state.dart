@@ -4,7 +4,9 @@ sealed class ServiceDetailState {
   const ServiceDetailState();
 }
 
-class ServiceDetailLoading extends ServiceDetailState {}
+class ServiceDetailLoading extends ServiceDetailState {
+  const ServiceDetailLoading();
+}
 
 class ServiceDetailError extends ServiceDetailState {
   String message;
@@ -15,4 +17,8 @@ class ServiceDetailLoaded extends ServiceDetailState {
   final ServiceDetailReadModel service;
 
   const ServiceDetailLoaded(this.service);
+}
+
+class ServiceDetailDeleted extends ServiceDetailState {
+  const ServiceDetailDeleted();
 }

@@ -65,7 +65,7 @@ enum ServiceCategory {
 
   static ServiceCategory fromDbcode(String code) {
     return ServiceCategory.values.firstWhere(
-      (e) => e.dbCode == code,
+      (e) => e.dbCode.toLowerCase() == code.toLowerCase(),
       orElse: () => ServiceCategory.others,
     );
   }
