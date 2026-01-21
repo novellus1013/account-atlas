@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 class AppTheme {
   const AppTheme._();
 
-  //함수 - ThemeData light() - 대신 getter를 사용하면, AppTheme.ligth() 대신 AppTheme.light 로 호출 가능
+  static const _fontFamily = "pretendard";
 
+  //함수 - ThemeData light() - 대신 getter를 사용하면, AppTheme.ligth() 대신 AppTheme.light 로 호출 가능
   static ThemeData get light {
     // flutter에서 기본적으로 제공하는 light 테마를 가져온 후, 필요한 값만 덮어씌우기
     final base = ThemeData.light();
@@ -21,31 +22,33 @@ class AppTheme {
     );
 
     // colorScheme의 경우 불필요한 값들을 가져오지 않기 위해 copyWith를 사용하지 않는다.
-    final textTheme = base.textTheme.copyWith(
-      displayLarge: base.textTheme.displayLarge?.copyWith(
-        fontSize: AppTextSizes.base,
-      ),
-      displayMedium: base.textTheme.displayMedium?.copyWith(
-        fontSize: AppTextSizes.md,
-      ),
-      displaySmall: base.textTheme.displaySmall?.copyWith(
-        fontSize: AppTextSizes.sm,
-        color: AppColor.textGrey,
-      ),
+    final textTheme = base.textTheme
+        .copyWith(
+          displayLarge: base.textTheme.displayLarge?.copyWith(
+            fontSize: AppTextSizes.base,
+          ),
+          displayMedium: base.textTheme.displayMedium?.copyWith(
+            fontSize: AppTextSizes.md,
+          ),
+          displaySmall: base.textTheme.displaySmall?.copyWith(
+            fontSize: AppTextSizes.sm,
+            color: AppColor.textGrey,
+          ),
 
-      titleLarge: base.textTheme.titleLarge?.copyWith(
-        fontSize: AppTextSizes.display,
-        fontWeight: FontWeight.w700,
-      ),
-      titleMedium: base.textTheme.titleMedium?.copyWith(
-        fontSize: AppTextSizes.xl,
-        fontWeight: FontWeight.w600,
-      ),
-      titleSmall: base.textTheme.titleSmall?.copyWith(
-        fontSize: AppTextSizes.lg,
-        fontWeight: FontWeight.w600,
-      ),
-    );
+          titleLarge: base.textTheme.titleLarge?.copyWith(
+            fontSize: AppTextSizes.display,
+            fontWeight: FontWeight.w700,
+          ),
+          titleMedium: base.textTheme.titleMedium?.copyWith(
+            fontSize: AppTextSizes.xl,
+            fontWeight: FontWeight.w600,
+          ),
+          titleSmall: base.textTheme.titleSmall?.copyWith(
+            fontSize: AppTextSizes.lg,
+            fontWeight: FontWeight.w600,
+          ),
+        )
+        .apply(fontFamily: _fontFamily);
 
     return base.copyWith(
       colorScheme: colorScheme,
@@ -70,9 +73,7 @@ class AppTheme {
           padding: EdgeInsetsDirectional.symmetric(
             horizontal: AppSpacing.basic,
           ),
-          textStyle: TextStyle(
-            inherit: false,
-            fontSize: AppTextSizes.base,
+          textStyle: textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),

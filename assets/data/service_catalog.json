@@ -1,0 +1,409 @@
+{
+    "version": 4,
+    "categories": [
+        {
+            "key": "video",
+            "label": "Video",
+            "services": [
+                {
+                    "key": "netflix",
+                    "displayName": "Netflix",
+                    "category": "video",
+                    "iconKey": "netflix",
+                    "iconColor": "0xFFE50914"
+                },
+                {
+                    "key": "youtube_premium",
+                    "displayName": "YouTube Premium",
+                    "category": "video",
+                    "iconKey": "youtube",
+                    "iconColor": "0xFFFF0000"
+                },
+                {
+                    "key": "disney_plus",
+                    "displayName": "Disney+",
+                    "category": "video",
+                    "iconKey": null
+                },
+                {
+                    "key": "hbo_max",
+                    "displayName": "HBO Max",
+                    "category": "video",
+                    "iconKey": "hbo",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "prime_video",
+                    "displayName": "Amazon Prime Video",
+                    "category": "video",
+                    "iconKey": null
+                },
+                {
+                    "key": "apple_tv_plus",
+                    "displayName": "Apple TV+",
+                    "category": "video",
+                    "iconKey": "appletv",
+                    "iconColor": "0xFF000000"
+                }
+            ]
+        },
+        {
+            "key": "music",
+            "label": "Music",
+            "services": [
+                {
+                    "key": "spotify",
+                    "displayName": "Spotify",
+                    "category": "music",
+                    "iconKey": "spotify",
+                    "iconColor": "0xFF1ED760"
+                },
+                {
+                    "key": "apple_music",
+                    "displayName": "Apple Music",
+                    "category": "music",
+                    "iconKey": "applemusic",
+                    "iconColor": "0xFFFA243C"
+                },
+                {
+                    "key": "youtube_music",
+                    "displayName": "YouTube Music",
+                    "category": "music",
+                    "iconKey": "youtubemusic",
+                    "iconColor": "0xFFFF0000"
+                },
+                {
+                    "key": "amazon_music",
+                    "displayName": "Amazon Music",
+                    "category": "music",
+                    "iconKey": null
+                },
+                {
+                    "key": "tidal",
+                    "displayName": "Tidal",
+                    "category": "music",
+                    "iconKey": "tidal",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "soundcloud",
+                    "displayName": "SoundCloud",
+                    "category": "music",
+                    "iconKey": "soundcloud",
+                    "iconColor": "0xFFFF5500"
+                }
+            ]
+        },
+        {
+            "key": "shopping",
+            "label": "Shopping",
+            "services": [
+                {
+                    "key": "amazon_prime",
+                    "displayName": "Amazon Prime",
+                    "category": "shopping",
+                    "iconKey": null
+                },
+                {
+                    "key": "walmart_plus",
+                    "displayName": "Walmart+",
+                    "category": "shopping",
+                    "iconKey": null
+                },
+                {
+                    "key": "uber_one",
+                    "displayName": "Uber One",
+                    "category": "shopping",
+                    "iconKey": "uber",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "doordash",
+                    "displayName": "DoorDash",
+                    "category": "shopping",
+                    "iconKey": "doordash",
+                    "iconColor": "0xFFFF3008"
+                },
+                {
+                    "key": "instacart_plus",
+                    "displayName": "Instacart+",
+                    "category": "shopping",
+                    "iconKey": "instacart",
+                    "iconColor": "0xFF43B02A"
+                },
+                {
+                    "key": "costco",
+                    "displayName": "Costco",
+                    "category": "shopping",
+                    "iconKey": null
+                }
+            ]
+        },
+        {
+            "key": "tool",
+            "label": "Tool",
+            "services": [
+                {
+                    "key": "microsoft_365",
+                    "displayName": "Microsoft 365",
+                    "category": "tool",
+                    "iconKey": null
+                },
+                {
+                    "key": "google_one",
+                    "displayName": "Google One",
+                    "category": "tool",
+                    "iconKey": "google",
+                    "iconColor": "0xFF4285F4"
+                },
+                {
+                    "key": "notion",
+                    "displayName": "Notion",
+                    "category": "tool",
+                    "iconKey": "notion",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "dropbox",
+                    "displayName": "Dropbox",
+                    "category": "tool",
+                    "iconKey": "dropbox",
+                    "iconColor": "0xFF0061FF"
+                },
+                {
+                    "key": "icloud",
+                    "displayName": "iCloud+",
+                    "category": "tool",
+                    "iconKey": "icloud",
+                    "iconColor": "0xFF3693F3"
+                },
+                {
+                    "key": "obsidian_sync",
+                    "displayName": "Obsidian Sync",
+                    "category": "tool",
+                    "iconKey": "obsidian",
+                    "iconColor": "0xFF7C3AED"
+                }
+            ]
+        },
+        {
+            "key": "sns",
+            "label": "Sns",
+            "services": [
+                {
+                    "key": "x",
+                    "displayName": "X",
+                    "category": "sns",
+                    "iconKey": "x",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "linkedin",
+                    "displayName": "LinkedIn",
+                    "category": "sns",
+                    "iconKey": null
+                },
+                {
+                    "key": "discord",
+                    "displayName": "Discord",
+                    "category": "sns",
+                    "iconKey": "discord",
+                    "iconColor": "0xFF5865F2"
+                },
+                {
+                    "key": "snapchat",
+                    "displayName": "Snapchat",
+                    "category": "sns",
+                    "iconKey": "snapchat",
+                    "iconColor": "0xFFFFFC00"
+                },
+                {
+                    "key": "telegram",
+                    "displayName": "Telegram",
+                    "category": "sns",
+                    "iconKey": "telegram",
+                    "iconColor": "0xFF26A5E4"
+                },
+                {
+                    "key": "twitch",
+                    "displayName": "Twitch",
+                    "category": "sns",
+                    "iconKey": "twitch",
+                    "iconColor": "0xFF9146FF"
+                }
+            ]
+        },
+        {
+            "key": "ai",
+            "label": "AI",
+            "services": [
+                {
+                    "key": "gemini",
+                    "displayName": "Gemini",
+                    "category": "ai",
+                    "iconKey": "googlegemini",
+                    "iconColor": "0xFF8E75B2"
+                },
+                {
+                    "key": "chatgpt",
+                    "displayName": "ChatGPT",
+                    "category": "ai",
+                    "iconKey": null
+                },
+                {
+                    "key": "claude",
+                    "displayName": "Claude",
+                    "category": "ai",
+                    "iconKey": "claude",
+                    "iconColor": "0xFFD97757"
+                },
+                {
+                    "key": "perplexity",
+                    "displayName": "Perplexity",
+                    "category": "ai",
+                    "iconKey": "perplexity",
+                    "iconColor": "0xFF1FB8CD"
+                },
+                {
+                    "key": "github_copilot",
+                    "displayName": "GitHub Copilot",
+                    "category": "ai",
+                    "iconKey": "githubcopilot",
+                    "iconColor": "0xFF000000"
+                }
+            ]
+        },
+        {
+            "key": "game",
+            "label": "Game",
+            "services": [
+                {
+                    "key": "xbox_game_pass",
+                    "displayName": "Xbox Game Pass",
+                    "category": "game",
+                    "iconKey": null
+                },
+                {
+                    "key": "playstation_plus",
+                    "displayName": "PlayStation Plus",
+                    "category": "game",
+                    "iconKey": "playstation",
+                    "iconColor": "0xFF0070D1"
+                },
+                {
+                    "key": "nintendo_online",
+                    "displayName": "Nintendo Switch Online",
+                    "category": "game",
+                    "iconKey": null
+                },
+                {
+                    "key": "geforce_now",
+                    "displayName": "GeForce Now",
+                    "category": "game",
+                    "iconKey": null
+                },
+                {
+                    "key": "ea_play",
+                    "displayName": "EA Play",
+                    "category": "game",
+                    "iconKey": "ea",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "roblox",
+                    "displayName": "Roblox",
+                    "category": "game",
+                    "iconKey": "roblox",
+                    "iconColor": "0xFF000000"
+                }
+            ]
+        },
+        {
+            "key": "education",
+            "label": "Edu",
+            "services": [
+                {
+                    "key": "duolingo",
+                    "displayName": "Duolingo",
+                    "category": "education",
+                    "iconKey": "duolingo",
+                    "iconColor": "0xFF58CC02"
+                },
+                {
+                    "key": "coursera",
+                    "displayName": "Coursera",
+                    "category": "education",
+                    "iconKey": "coursera",
+                    "iconColor": "0xFF0056D2"
+                },
+                {
+                    "key": "masterclass",
+                    "displayName": "MasterClass",
+                    "category": "education",
+                    "iconKey": null
+                },
+                {
+                    "key": "skillshare",
+                    "displayName": "Skillshare",
+                    "category": "education",
+                    "iconKey": "skillshare",
+                    "iconColor": "0xFF00FF84"
+                },
+                {
+                    "key": "grammarly",
+                    "displayName": "Grammarly",
+                    "category": "education",
+                    "iconKey": "grammarly",
+                    "iconColor": "0xFF027E6F"
+                }
+            ]
+        },
+        {
+            "key": "others",
+            "label": "Others",
+            "services": [
+                {
+                    "key": "tinder",
+                    "displayName": "Tinder",
+                    "category": "others",
+                    "iconKey": "tinder",
+                    "iconColor": "0xFFFF6B6B"
+                },
+                {
+                    "key": "strava",
+                    "displayName": "Strava",
+                    "category": "others",
+                    "iconKey": "strava",
+                    "iconColor": "0xFFFC4C02"
+                },
+                {
+                    "key": "nordvpn",
+                    "displayName": "NordVPN",
+                    "category": "others",
+                    "iconKey": "nordvpn",
+                    "iconColor": "0xFF4687FF"
+                },
+                {
+                    "key": "calm",
+                    "displayName": "Calm",
+                    "category": "others",
+                    "iconKey": null
+                },
+                {
+                    "key": "nyt",
+                    "displayName": "The New York Times",
+                    "category": "others",
+                    "iconKey": "newyorktimes",
+                    "iconColor": "0xFF000000"
+                },
+                {
+                    "key": "peloton",
+                    "displayName": "Peloton",
+                    "category": "others",
+                    "iconKey": "peloton",
+                    "iconColor": "0xFF181A1D"
+                }
+            ]
+        }
+    ]
+}
