@@ -65,18 +65,17 @@ class _BottomNav extends StatelessWidget {
           }
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle_outlined),
-            label: '계정',
+            label: 'Accounts',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: '서비스'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Services'),
 
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.bar_chart_rounded),
-          //   label: '보고서',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );
