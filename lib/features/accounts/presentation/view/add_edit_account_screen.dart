@@ -6,6 +6,7 @@ import 'package:account_atlas/features/accounts/presentation/state/add_edit_acco
 import 'package:account_atlas/features/accounts/presentation/vm/add_edit_account_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEditAccountScreen extends ConsumerStatefulWidget {
   final String? id;
@@ -56,9 +57,9 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
         switch (next) {
           case AddEditAccountLoaded(account: final account)
               when previous is AddEditAccountSaving && account?.id != null:
-            // pop 전에 provider 초기화
             ref.invalidate(addEditAccountViewModelProvider(null));
-            Navigator.of(context).pop();
+            // Navigate to AccountsScreen after add/edit
+            context.go('/accounts');
             break;
           case AddEditAccountError(message: final message):
             ScaffoldMessenger.of(

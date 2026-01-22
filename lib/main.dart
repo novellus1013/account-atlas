@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Run commands:  flutter run --dart-define=ENV=prod  vs  flutter run --dart-define=ENV=dev
 
-// const String _env = String.fromEnvironment('ENV', defaultValue: 'dev');
-const String _env = String.fromEnvironment('ENV', defaultValue: 'prod');
+const String _env = String.fromEnvironment('ENV', defaultValue: 'dev');
+// const String _env = String.fromEnvironment('ENV', defaultValue: 'prod');
 
 const bool _isProd = _env == 'prod';
 

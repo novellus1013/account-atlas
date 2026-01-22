@@ -122,19 +122,8 @@ class _AddEditServiceScreenState extends ConsumerState<AddEditServiceScreen> {
               when previous is AddEditServiceSaving && model != null:
             // Clear provider state
             ref.invalidate(addEditserviceViewModelProvider(null));
-
-            if (widget.serviceId != null) {
-              // Edit flow: go back to service detail screen
-              context.pop();
-            } else {
-              // Add flow: navigate to the newly created service detail screen
-              final newServiceId = model.service.id;
-              if (newServiceId != null) {
-                context.go('/services/details/$newServiceId');
-              } else {
-                context.pop();
-              }
-            }
+            // Navigate to ServicesScreen after add/edit
+            context.go('/services');
             break;
           case AddEditServiceError(message: final message):
             ScaffoldMessenger.of(
