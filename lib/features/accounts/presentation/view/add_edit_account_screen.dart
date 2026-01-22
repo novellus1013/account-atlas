@@ -1,3 +1,4 @@
+import 'package:account_atlas/core/constants/app_color.dart';
 import 'package:account_atlas/core/constants/app_spacing.dart';
 import 'package:account_atlas/core/theme/gaps.dart';
 import 'package:account_atlas/features/accounts/domain/accounts_enums.dart';
@@ -73,6 +74,7 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
     );
 
     return Scaffold(
+      backgroundColor: AppColor.grey50,
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Account' : 'Add Account'),
         centerTitle: false,
@@ -161,7 +163,10 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
                     width: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(_isEditMode ? 'Save Changes' : 'Create Account'),
+                : Text(
+                    _isEditMode ? 'Save Changes' : 'Create Account',
+                    style: TextStyle(color: AppColor.white),
+                  ),
           ),
         ],
       ),

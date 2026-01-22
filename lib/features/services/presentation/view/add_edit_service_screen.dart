@@ -137,6 +137,7 @@ class _AddEditServiceScreenState extends ConsumerState<AddEditServiceScreen> {
     );
 
     return Scaffold(
+      backgroundColor: AppColor.grey50,
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Service' : 'Add Service'),
         centerTitle: false,

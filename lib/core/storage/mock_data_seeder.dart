@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:account_atlas/core/storage/app_database.dart';
 import 'package:account_atlas/features/accounts/data/dtos/account_local_dto.dart';
 import 'package:account_atlas/features/services/data/dtos/plan_local_dto.dart';
@@ -23,74 +25,90 @@ class MockDataSeeder {
     }
 
     final now = DateTime.now();
+    final random = Random();
+
+    // 1. 계정 생성 (가입일 랜덤: 최근 1년 ~ 10일 전)
     final accounts = [
       AccountLocalDto(
         identifier: 'coremagic@gmail.com',
         provider: 'Gmail',
         createdAt: now
-            .subtract(const Duration(days: 12))
+            .subtract(Duration(days: random.nextInt(350) + 10))
             .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'nyamnyang@gmail.com',
         provider: 'Facebook',
-        createdAt: now.subtract(const Duration(days: 9)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: '01044332222',
         provider: 'Whatsapp',
-        createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'smalltide@naver.com',
         provider: 'Email',
-        createdAt: now.subtract(const Duration(days: 7)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'sosmayday@outlook.com',
         provider: 'Apple',
-        createdAt: now.subtract(const Duration(days: 5)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'power2000@naver.com',
         provider: 'Github',
-        createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
       AccountLocalDto(
         identifier: 'corizaha@yahoo.com',
         provider: 'Others',
-        createdAt: now.subtract(const Duration(days: 2)).millisecondsSinceEpoch,
+        createdAt: now
+            .subtract(Duration(days: random.nextInt(350) + 10))
+            .millisecondsSinceEpoch,
       ),
     ];
 
-    const servicesPerAccount = 9;
-    var serviceIndex = 0;
-
+    // 계정당 서비스 갯수 랜덤 (7~15개)
     for (final account in accounts) {
       final accountId = await db.insert('accounts', account.toInsertMap());
+
+      // 서비스 템플릿을 랜덤으로 섞어서 선택
+      final shuffledServices = List.of(_serviceTemplates)..shuffle(random);
+      final count = random.nextInt(9) + 7;
+      final selectedServices = shuffledServices.take(count).toList();
+
       await _insertServicesForAccount(
         db: db,
         accountId: accountId,
-        baseTime: now,
-        startIndex: serviceIndex,
-        count: servicesPerAccount,
+        services: selectedServices,
       );
-      serviceIndex += servicesPerAccount;
     }
   }
 
   static Future<void> _insertServicesForAccount({
     required Database db,
     required int accountId,
-    required DateTime baseTime,
-    required int startIndex,
-    required int count,
+    required List<_MockService> services,
   }) async {
-    for (var index = 0; index < count; index += 1) {
-      final template =
-          _serviceTemplates[(startIndex + index) % _serviceTemplates.length];
-      final createdAt = baseTime
-          .subtract(Duration(days: 1 + index))
+    final random = Random();
+    final now = DateTime.now();
+
+    for (final template in services) {
+      // 가입일: 과거 2년 ~ 3일 전 사이 랜덤
+      final createdAt = now
+          .subtract(Duration(days: random.nextInt(700) + 3))
           .millisecondsSinceEpoch;
 
       final serviceId = await db.insert(
@@ -108,11 +126,20 @@ class MockDataSeeder {
         ).toInsertMap(),
       );
 
+      // 유료 서비스일 때만 Plan 추가
       if (template.isPay == 1) {
-        final billingCycle = template.billingCycle ?? 0;
-        final nextBillingDate = billingCycle == 1
-            ? baseTime.add(const Duration(days: 365)).millisecondsSinceEpoch
-            : baseTime.add(const Duration(days: 30)).millisecondsSinceEpoch;
+        final billingCycle =
+            template.billingCycle ?? 0; // 0: Monthly, 1: Yearly
+
+        // 다음 결제일: 월간(1~30일 후), 연간(1~360일 후) 랜덤
+        final daysUntilNext = billingCycle == 1
+            ? random.nextInt(360) + 1
+            : random.nextInt(28) + 1;
+
+        final nextBillingDate = now
+            .add(Duration(days: daysUntilNext))
+            .millisecondsSinceEpoch;
+
         await db.insert(
           'plans',
           PlanLocalDto(
@@ -135,10 +162,10 @@ class _MockService {
   final String loginType;
   final String? loginId;
   final String category;
-  final int isPay;
+  final int isPay; // 0: Free, 1: Paid
   final String? memo;
-  final int? amount;
-  final int? billingCycle;
+  final int? amount; // Dollar Unit ($1 = 1)
+  final int? billingCycle; // 0: Monthly, 1: Yearly
   final String? currency;
 
   const _MockService({
@@ -155,7 +182,9 @@ class _MockService {
   });
 }
 
+// JSON 데이터를 기반으로 재구성된 서비스 리스트
 final List<_MockService> _serviceTemplates = [
+  // --- Video ---
   _MockService(
     providedServiceKey: 'netflix',
     displayName: 'Netflix',
@@ -163,20 +192,20 @@ final List<_MockService> _serviceTemplates = [
     loginId: 'user@netflix.com',
     category: 'video',
     isPay: 1,
-    memo: 'Premium',
-    amount: 2299,
+    memo: 'Premium 4K',
+    amount: 23,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'youtube_premium',
     displayName: 'YouTube Premium',
-    loginType: 'email',
+    loginType: 'google',
     loginId: 'user@gmail.com',
     category: 'video',
     isPay: 1,
-    memo: 'Individual',
-    amount: 1399,
+    memo: 'Family',
+    amount: 23,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -184,83 +213,97 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'disney_plus',
     displayName: 'Disney+',
     loginType: 'email',
-    loginId: 'user@disney.com',
+    loginId: 'fan@disney.com',
     category: 'video',
     isPay: 1,
-    memo: 'Basic (Ads)',
-    amount: 799,
+    memo: 'No Ads',
+    amount: 14,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
-    providedServiceKey: 'max',
-    displayName: 'Max',
+    providedServiceKey: 'hbo_max',
+    displayName: 'HBO Max',
     loginType: 'email',
-    loginId: 'user@max.com',
+    loginId: 'movie@hbo.com',
     category: 'video',
     isPay: 1,
     memo: 'Ad-Free',
-    amount: 1699,
+    amount: 16,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'prime_video',
     displayName: 'Amazon Prime Video',
-    loginType: 'email',
-    loginId: 'user@amazon.com',
+    loginType: 'amazon',
+    loginId: 'shop@amazon.com',
     category: 'video',
     isPay: 1,
     memo: 'Video Only',
-    amount: 899,
+    amount: 9,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
+    providedServiceKey: 'apple_tv_plus',
+    displayName: 'Apple TV+',
+    loginType: 'apple',
+    loginId: 'me@icloud.com',
+    category: 'video',
+    isPay: 1,
+    memo: 'Monthly',
+    amount: 10,
+    billingCycle: 0,
+    currency: 'USD',
+  ),
+
+  // --- Music ---
+  _MockService(
     providedServiceKey: 'spotify',
     displayName: 'Spotify',
     loginType: 'email',
-    loginId: 'user@spotify.com',
+    loginId: 'music@spotify.com',
     category: 'music',
     isPay: 1,
-    memo: 'Individual',
-    amount: 1199,
+    memo: 'Duo Plan',
+    amount: 15,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'apple_music',
     displayName: 'Apple Music',
-    loginType: 'email',
-    loginId: 'user@icloud.com',
+    loginType: 'apple',
+    loginId: 'me@icloud.com',
     category: 'music',
     isPay: 1,
-    memo: 'Family',
-    amount: 1699,
+    memo: 'Individual',
+    amount: 11,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'youtube_music',
     displayName: 'YouTube Music',
-    loginType: 'email',
+    loginType: 'google',
     loginId: 'user@gmail.com',
     category: 'music',
     isPay: 1,
     memo: 'Premium',
-    amount: 1099,
+    amount: 11,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'amazon_music',
     displayName: 'Amazon Music',
-    loginType: 'email',
+    loginType: 'amazon',
     loginId: 'user@amazon.com',
     category: 'music',
     isPay: 1,
     memo: 'Unlimited',
-    amount: 1099,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -268,35 +311,48 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'tidal',
     displayName: 'Tidal',
     loginType: 'email',
-    loginId: 'user@tidal.com',
+    loginId: 'audiophile@tidal.com',
     category: 'music',
     isPay: 1,
-    memo: 'Individual',
-    amount: 1099,
+    memo: 'HiFi Plus',
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
+    providedServiceKey: 'soundcloud',
+    displayName: 'SoundCloud',
+    loginType: 'social',
+    loginId: 'indie_artist',
+    category: 'music',
+    isPay: 0,
+    memo: 'Free listening',
+    amount: null,
+    billingCycle: null,
+    currency: null,
+  ), // Free
+  // --- Shopping ---
+  _MockService(
     providedServiceKey: 'amazon_prime',
     displayName: 'Amazon Prime',
-    loginType: 'email',
-    loginId: 'user@amazon.com',
+    loginType: 'amazon',
+    loginId: 'shop@amazon.com',
     category: 'shopping',
     isPay: 1,
-    memo: 'Monthly',
-    amount: 1499,
-    billingCycle: 0,
+    memo: 'Annual',
+    amount: 139,
+    billingCycle: 1,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'walmart_plus',
     displayName: 'Walmart+',
     loginType: 'email',
-    loginId: 'user@walmart.com',
+    loginId: 'shop@walmart.com',
     category: 'shopping',
     isPay: 1,
     memo: 'Monthly',
-    amount: 1295,
+    amount: 13,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -304,11 +360,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'uber_one',
     displayName: 'Uber One',
     loginType: 'email',
-    loginId: 'user@uber.com',
+    loginId: 'taxi@uber.com',
     category: 'shopping',
     isPay: 1,
     memo: 'Monthly',
-    amount: 999,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -316,11 +372,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'doordash',
     displayName: 'DoorDash',
     loginType: 'email',
-    loginId: 'user@doordash.com',
+    loginId: 'food@doordash.com',
     category: 'shopping',
     isPay: 1,
     memo: 'DashPass',
-    amount: 999,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -328,12 +384,12 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'instacart_plus',
     displayName: 'Instacart+',
     loginType: 'email',
-    loginId: 'user@instacart.com',
+    loginId: 'food@insta.com',
     category: 'shopping',
     isPay: 1,
-    memo: 'Monthly',
-    amount: 999,
-    billingCycle: 0,
+    memo: 'Yearly',
+    amount: 99,
+    billingCycle: 1,
     currency: 'USD',
   ),
   _MockService(
@@ -344,31 +400,33 @@ final List<_MockService> _serviceTemplates = [
     category: 'shopping',
     isPay: 1,
     memo: 'Gold Star',
-    amount: 6500,
+    amount: 65,
     billingCycle: 1,
     currency: 'USD',
   ),
+
+  // --- Tool ---
   _MockService(
     providedServiceKey: 'microsoft_365',
     displayName: 'Microsoft 365',
-    loginType: 'email',
-    loginId: 'user@outlook.com',
+    loginType: 'microsoft',
+    loginId: 'office@outlook.com',
     category: 'tool',
     isPay: 1,
     memo: 'Personal',
-    amount: 699,
+    amount: 7,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'google_one',
     displayName: 'Google One',
-    loginType: 'email',
-    loginId: 'user@gmail.com',
+    loginType: 'google',
+    loginId: 'drive@gmail.com',
     category: 'tool',
     isPay: 1,
-    memo: 'Basic (100GB)',
-    amount: 199,
+    memo: '2TB',
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -376,47 +434,61 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'notion',
     displayName: 'Notion',
     loginType: 'email',
-    loginId: 'user@notion.so',
+    loginId: 'note@notion.so',
     category: 'tool',
-    isPay: 1,
-    memo: 'Plus',
-    amount: 1000,
-    billingCycle: 0,
-    currency: 'USD',
-  ),
-  _MockService(
-    providedServiceKey: 'adobe_cc',
-    displayName: 'Adobe Creative Cloud',
-    loginType: 'email',
-    loginId: 'user@adobe.com',
-    category: 'tool',
-    isPay: 1,
-    memo: 'All Apps',
-    amount: 5999,
-    billingCycle: 0,
-    currency: 'USD',
-  ),
+    isPay: 0,
+    memo: 'Personal Free',
+    amount: null,
+    billingCycle: null,
+    currency: null,
+  ), // Free
   _MockService(
     providedServiceKey: 'dropbox',
     displayName: 'Dropbox',
     loginType: 'email',
-    loginId: 'user@dropbox.com',
+    loginId: 'file@box.com',
     category: 'tool',
     isPay: 1,
     memo: 'Plus',
-    amount: 1199,
+    amount: 12,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
+    providedServiceKey: 'icloud',
+    displayName: 'iCloud+',
+    loginType: 'apple',
+    loginId: 'me@icloud.com',
+    category: 'tool',
+    isPay: 1,
+    memo: '200GB',
+    amount: 3,
+    billingCycle: 0,
+    currency: 'USD',
+  ),
+  _MockService(
+    providedServiceKey: 'obsidian_sync',
+    displayName: 'Obsidian Sync',
+    loginType: 'email',
+    loginId: 'writer@obsidian.md',
+    category: 'tool',
+    isPay: 1,
+    memo: 'Sync',
+    amount: 8,
+    billingCycle: 0,
+    currency: 'USD',
+  ),
+
+  // --- SNS ---
+  _MockService(
     providedServiceKey: 'x',
     displayName: 'X',
     loginType: 'social',
-    loginId: null,
+    loginId: '@musk_fan',
     category: 'sns',
     isPay: 1,
     memo: 'Premium',
-    amount: 800,
+    amount: 8,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -424,47 +496,72 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'linkedin',
     displayName: 'LinkedIn',
     loginType: 'email',
-    loginId: 'user@linkedin.com',
+    loginId: 'job@linkedin.com',
     category: 'sns',
     isPay: 1,
     memo: 'Premium Career',
-    amount: 3999,
+    amount: 40,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'discord',
     displayName: 'Discord',
-    loginType: 'social',
-    loginId: null,
+    loginType: 'email',
+    loginId: 'gamer#9999',
     category: 'sns',
     isPay: 1,
     memo: 'Nitro',
-    amount: 999,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'snapchat',
     displayName: 'Snapchat',
-    loginType: 'social',
-    loginId: null,
+    loginType: 'phone',
+    loginId: '010-1234-5678',
+    category: 'sns',
+    isPay: 0,
+    memo: 'Personal',
+    amount: null,
+    billingCycle: null,
+    currency: null,
+  ), // Free
+  _MockService(
+    providedServiceKey: 'telegram',
+    displayName: 'Telegram',
+    loginType: 'phone',
+    loginId: '010-9876-5432',
     category: 'sns',
     isPay: 1,
-    memo: 'Snapchat+',
-    amount: 399,
+    memo: 'Premium',
+    amount: 5,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
-    providedServiceKey: 'telegram',
-    displayName: 'Telegram',
+    providedServiceKey: 'twitch',
+    displayName: 'Twitch',
     loginType: 'social',
-    loginId: null,
+    loginId: 'stream_fan',
     category: 'sns',
+    isPay: 0,
+    memo: 'Viewer',
+    amount: null,
+    billingCycle: null,
+    currency: null,
+  ), // Free
+  // --- AI ---
+  _MockService(
+    providedServiceKey: 'gemini',
+    displayName: 'Gemini',
+    loginType: 'google',
+    loginId: 'ai@google.com',
+    category: 'ai',
     isPay: 1,
-    memo: 'Premium',
-    amount: 499,
+    memo: 'Advanced',
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -472,11 +569,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'chatgpt',
     displayName: 'ChatGPT',
     loginType: 'email',
-    loginId: 'user@openai.com',
+    loginId: 'ai@openai.com',
     category: 'ai',
     isPay: 1,
     memo: 'Plus',
-    amount: 2000,
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -484,11 +581,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'claude',
     displayName: 'Claude',
     loginType: 'email',
-    loginId: 'user@anthropic.com',
+    loginId: 'smart@anthropic.com',
     category: 'ai',
     isPay: 1,
     memo: 'Pro',
-    amount: 2000,
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -496,83 +593,73 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'perplexity',
     displayName: 'Perplexity',
     loginType: 'email',
-    loginId: 'user@perplexity.ai',
+    loginId: 'search@pplx.ai',
     category: 'ai',
     isPay: 1,
     memo: 'Pro',
-    amount: 2000,
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'github_copilot',
     displayName: 'GitHub Copilot',
-    loginType: 'email',
-    loginId: 'user@github.com',
+    loginType: 'github',
+    loginId: 'dev_guru',
     category: 'ai',
     isPay: 1,
     memo: 'Individual',
-    amount: 1000,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
-  _MockService(
-    providedServiceKey: 'midjourney',
-    displayName: 'Midjourney',
-    loginType: 'email',
-    loginId: 'user@midjourney.com',
-    category: 'ai',
-    isPay: 1,
-    memo: 'Basic',
-    amount: 1000,
-    billingCycle: 0,
-    currency: 'USD',
-  ),
+
+  // --- Game ---
   _MockService(
     providedServiceKey: 'xbox_game_pass',
     displayName: 'Xbox Game Pass',
-    loginType: 'email',
-    loginId: 'user@xbox.com',
+    loginType: 'microsoft',
+    loginId: 'play@xbox.com',
     category: 'game',
     isPay: 1,
     memo: 'Ultimate',
-    amount: 1999,
+    amount: 20,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'playstation_plus',
     displayName: 'PlayStation Plus',
-    loginType: 'email',
-    loginId: 'user@playstation.com',
+    loginType: 'sony',
+    loginId: 'play@sony.com',
     category: 'game',
     isPay: 1,
     memo: 'Extra',
-    amount: 1499,
+    amount: 15,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'nintendo_online',
     displayName: 'Nintendo Switch Online',
-    loginType: 'email',
-    loginId: 'user@nintendo.com',
+    loginType: 'nintendo',
+    loginId: 'mario@nintendo.com',
     category: 'game',
     isPay: 1,
-    memo: 'Individual',
-    amount: 399,
-    billingCycle: 0,
+    memo: 'Individual Annual',
+    amount: 20,
+    billingCycle: 1,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'geforce_now',
     displayName: 'GeForce Now',
     loginType: 'email',
-    loginId: 'user@nvidia.com',
+    loginId: 'cloud@nvidia.com',
     category: 'game',
     isPay: 1,
     memo: 'Priority',
-    amount: 999,
+    amount: 10,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -580,23 +667,37 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'ea_play',
     displayName: 'EA Play',
     loginType: 'email',
-    loginId: 'user@ea.com',
+    loginId: 'sports@ea.com',
     category: 'game',
     isPay: 1,
     memo: 'Monthly',
-    amount: 599,
+    amount: 6,
     billingCycle: 0,
     currency: 'USD',
   ),
   _MockService(
+    providedServiceKey: 'roblox',
+    displayName: 'Roblox',
+    loginType: 'email',
+    loginId: 'kid_gamer',
+    category: 'game',
+    isPay: 1,
+    memo: 'Premium 450',
+    amount: 5,
+    billingCycle: 0,
+    currency: 'USD',
+  ),
+
+  // --- Edu ---
+  _MockService(
     providedServiceKey: 'duolingo',
     displayName: 'Duolingo',
-    loginType: 'email',
-    loginId: 'user@duolingo.com',
+    loginType: 'google',
+    loginId: 'lang@duo.com',
     category: 'education',
     isPay: 1,
     memo: 'Super',
-    amount: 1299,
+    amount: 7,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -604,11 +705,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'coursera',
     displayName: 'Coursera',
     loginType: 'email',
-    loginId: 'user@coursera.org',
+    loginId: 'learn@coursera.org',
     category: 'education',
     isPay: 1,
-    memo: 'Coursera Plus',
-    amount: 5900,
+    memo: 'Plus',
+    amount: 59,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -616,11 +717,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'masterclass',
     displayName: 'MasterClass',
     loginType: 'email',
-    loginId: 'user@masterclass.com',
+    loginId: 'skill@master.com',
     category: 'education',
     isPay: 1,
     memo: 'Individual',
-    amount: 1500,
+    amount: 120,
     billingCycle: 1,
     currency: 'USD',
   ),
@@ -628,11 +729,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'skillshare',
     displayName: 'Skillshare',
     loginType: 'email',
-    loginId: 'user@skillshare.com',
+    loginId: 'create@skill.com',
     category: 'education',
     isPay: 1,
-    memo: 'Premium',
-    amount: 1375,
+    memo: 'Annual',
+    amount: 168,
     billingCycle: 1,
     currency: 'USD',
   ),
@@ -640,23 +741,25 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'grammarly',
     displayName: 'Grammarly',
     loginType: 'email',
-    loginId: 'user@grammarly.com',
+    loginId: 'write@grammarly.com',
     category: 'education',
     isPay: 1,
     memo: 'Premium',
-    amount: 1200,
+    amount: 144,
     billingCycle: 1,
     currency: 'USD',
   ),
+
+  // --- Others ---
   _MockService(
     providedServiceKey: 'tinder',
     displayName: 'Tinder',
-    loginType: 'email',
-    loginId: 'user@tinder.com',
+    loginType: 'phone',
+    loginId: '010-5678-1234',
     category: 'others',
     isPay: 1,
     memo: 'Gold',
-    amount: 2499,
+    amount: 25,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -664,23 +767,23 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'strava',
     displayName: 'Strava',
     loginType: 'email',
-    loginId: 'user@strava.com',
+    loginId: 'run@strava.com',
     category: 'others',
     isPay: 1,
-    memo: 'Premium',
-    amount: 1199,
-    billingCycle: 0,
+    memo: 'Annual',
+    amount: 80,
+    billingCycle: 1,
     currency: 'USD',
   ),
   _MockService(
     providedServiceKey: 'nordvpn',
     displayName: 'NordVPN',
     loginType: 'email',
-    loginId: 'user@nordvpn.com',
+    loginId: 'hide@vpn.com',
     category: 'others',
     isPay: 1,
-    memo: 'Standard',
-    amount: 1299,
+    memo: '2-Year Plan',
+    amount: 4,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -688,11 +791,11 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'calm',
     displayName: 'Calm',
     loginType: 'email',
-    loginId: 'user@calm.com',
+    loginId: 'relax@calm.com',
     category: 'others',
     isPay: 1,
     memo: 'Premium',
-    amount: 1499,
+    amount: 15,
     billingCycle: 0,
     currency: 'USD',
   ),
@@ -700,11 +803,23 @@ final List<_MockService> _serviceTemplates = [
     providedServiceKey: 'nyt',
     displayName: 'The New York Times',
     loginType: 'email',
-    loginId: 'user@nytimes.com',
+    loginId: 'news@nyt.com',
     category: 'others',
     isPay: 1,
     memo: 'All Access',
-    amount: 2500,
+    amount: 25,
+    billingCycle: 0,
+    currency: 'USD',
+  ),
+  _MockService(
+    providedServiceKey: 'peloton',
+    displayName: 'Peloton',
+    loginType: 'email',
+    loginId: 'bike@peloton.com',
+    category: 'others',
+    isPay: 1,
+    memo: 'App Membership',
+    amount: 13,
     billingCycle: 0,
     currency: 'USD',
   ),
