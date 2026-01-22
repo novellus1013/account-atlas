@@ -1,3 +1,4 @@
+import 'package:account_atlas/core/constants/app_color.dart';
 import 'package:account_atlas/core/constants/app_spacing.dart';
 import 'package:account_atlas/core/theme/gaps.dart';
 import 'package:account_atlas/features/accounts/domain/accounts_enums.dart';
@@ -6,6 +7,7 @@ import 'package:account_atlas/features/accounts/presentation/state/add_edit_acco
 import 'package:account_atlas/features/accounts/presentation/vm/add_edit_account_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEditAccountScreen extends ConsumerStatefulWidget {
   final String? id;
@@ -56,9 +58,9 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
         switch (next) {
           case AddEditAccountLoaded(account: final account)
               when previous is AddEditAccountSaving && account?.id != null:
-            // pop 전에 provider 초기화
             ref.invalidate(addEditAccountViewModelProvider(null));
-            Navigator.of(context).pop();
+            // Navigate to AccountsScreen after add/edit
+            context.go('/accounts');
             break;
           case AddEditAccountError(message: final message):
             ScaffoldMessenger.of(
@@ -72,6 +74,7 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
     );
 
     return Scaffold(
+      backgroundColor: AppColor.grey50,
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Account' : 'Add Account'),
         centerTitle: false,
@@ -160,7 +163,10 @@ class _AddEditAccountScreenState extends ConsumerState<AddEditAccountScreen> {
                     width: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(_isEditMode ? 'Save Changes' : 'Create Account'),
+                : Text(
+                    _isEditMode ? 'Save Changes' : 'Create Account',
+                    style: TextStyle(color: AppColor.white),
+                  ),
           ),
         ],
       ),

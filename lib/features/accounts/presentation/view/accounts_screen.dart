@@ -21,6 +21,7 @@ class AccountsScreen extends ConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColor.grey50,
         appBar: AppBar(
           title: Text('My Accounts'),
           centerTitle: false,

@@ -20,8 +20,8 @@ class SettingsScreen extends StatelessWidget {
       backgroundColor: AppColor.grey50,
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: AppColor.white,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -29,6 +29,10 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Trademark Disclaimer
+              _buildTrademarkNotice(),
+              Gaps.v24,
+
               // General Settings
               _SettingsSection(
                 title: 'General',
@@ -88,10 +92,6 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Gaps.v24,
-
-              // Trademark Disclaimer
-              _buildTrademarkNotice(),
               Gaps.v24,
 
               // Version Info

@@ -44,7 +44,7 @@ class GetAllAccountsDetail {
         if (service.isPay && service.id != null) {
           try {
             final plan = await _planRepo.getPlanByAccountServiceId(service.id!);
-            monthlyBill += plan.amount;
+            monthlyBill += _toMonthlyAmount(plan.amount, plan.billingCycle);
           } on PlanNotFound {
             // Service is marked as paid but has no plan yet - skip
           }
@@ -64,5 +64,14 @@ class GetAllAccountsDetail {
     }
 
     return result;
+  }
+
+  int _toMonthlyAmount(int amount, BillingCycle billingCycle) {
+    switch (billingCycle) {
+      case BillingCycle.monthly:
+        return amount;
+      case BillingCycle.yearly:
+        return (amount / 12).round();
+    }
   }
 }

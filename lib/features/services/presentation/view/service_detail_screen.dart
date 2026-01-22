@@ -8,6 +8,7 @@ import 'package:account_atlas/core/utils/ui_helpers.dart';
 import 'package:account_atlas/features/accounts/data/repositories/service_catalog_repository.dart';
 import 'package:account_atlas/features/accounts/domain/entities/account_entity.dart';
 import 'package:account_atlas/features/accounts/presentation/provider/accounts_provider.dart';
+import 'package:account_atlas/features/accounts/presentation/vm/account_detail_view_model.dart';
 import 'package:account_atlas/features/home/presentation/vm/home_view_model.dart';
 import 'package:account_atlas/features/services/domain/entities/plan_entity.dart';
 import 'package:account_atlas/features/services/domain/entities/service_entity.dart';
@@ -92,6 +93,10 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
 
     ref.listen(serviceDetailViewmodelProvider(_serviceId), (previous, next) {
       if (next is ServiceDetailDeleted && context.mounted) {
+        if (previous is ServiceDetailLoaded) {
+          final accountId = previous.service.service.accountId;
+          ref.invalidate(accountDetailViewModelProvider(accountId));
+        }
         ref.invalidate(homeViewModelProvider);
         context.pop();
       }

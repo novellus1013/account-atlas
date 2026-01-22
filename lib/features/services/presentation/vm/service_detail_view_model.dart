@@ -1,3 +1,4 @@
+import 'package:account_atlas/features/accounts/presentation/vm/accounts_view_model.dart';
 import 'package:account_atlas/features/home/presentation/vm/home_view_model.dart';
 import 'package:account_atlas/features/services/domain/failure/service_failure.dart';
 import 'package:account_atlas/features/services/domain/usecases/delete_service.dart';
@@ -47,6 +48,7 @@ class ServiceDetailViewModel extends Notifier<ServiceDetailState> {
       await _deleteService.call(serviceId);
       state = const ServiceDetailDeleted();
       ref.invalidate(servicesViewModelProvider);
+      ref.invalidate(accountsViewModelProvider);
       ref.invalidate(homeViewModelProvider);
     } on ServiceFailure catch (e) {
       state = ServiceDetailError(e.message);

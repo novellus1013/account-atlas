@@ -9,6 +9,7 @@ import 'package:account_atlas/features/services/domain/usecases/get_service_deta
 import 'package:account_atlas/features/services/domain/usecases/save_service.dart';
 import 'package:account_atlas/features/services/presentation/provider/services_provider.dart';
 import 'package:account_atlas/features/services/presentation/state/add_edit_service_state.dart';
+import 'package:account_atlas/features/services/presentation/vm/service_detail_view_model.dart';
 import 'package:account_atlas/features/services/presentation/vm/services_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -102,11 +103,14 @@ class AddEditServiceViewModel extends Notifier<AddEditServiceState> {
     try {
       await _saveService.call(model);
 
-      // Invalidate providers to refresh lists and counts
+      // Invalidate providers to refresh lists and detail
       ref.invalidate(servicesViewModelProvider);
       ref.invalidate(homeViewModelProvider);
       ref.invalidate(accountsViewModelProvider);
       ref.invalidate(accountDetailViewModelProvider(model.service.accountId));
+      if (model.service.id != null) {
+        ref.invalidate(serviceDetailViewmodelProvider(model.service.id!));
+      }
 
       state = AddEditServiceLoaded(model);
     } on ServiceFailure catch (e) {
