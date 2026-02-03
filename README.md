@@ -1,4 +1,4 @@
-# AccountAtlas - Your Accounts, Your Services, One Place
+# Account Atlas - Your Accounts, Your Services, One Place
 
   
 
