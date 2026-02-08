@@ -12,7 +12,7 @@ A Flutter-based mobile application for managing digital subscriptions and accoun
 
 | App Store | Google Play |
 |---|---|
-| [<img width="120" height="40" alt="App Store" src="https://github.com/user-attachments/assets/2d85e984-1949-4262-9aae-63f36ca00726" />](https://apps.apple.com/us/app/account-atlas-track-accounts/id6758081039) | [<img width="120" height="40" alt="Google Play" src="https://github.com/user-attachments/assets/bcc419e6-1d8c-44bf-b5df-1454f3c89df9" />]([https://play.google.com/store/apps/details?id=com.accountatlas](https://play.google.com/store/apps/details?id=co.novelus.accountatlas)) |
+| [<img width="120" height="40" alt="App Store" src="https://github.com/user-attachments/assets/2d85e984-1949-4262-9aae-63f36ca00726" />](https://apps.apple.com/us/app/account-atlas-track-accounts/id6758081039) | [<img width="120" height="40" alt="Google Play" src="https://github.com/user-attachments/assets/bcc419e6-1d8c-44bf-b5df-1454f3c89df9" />](https://play.google.com/store/apps/details?id=co.novelus.accountatlas) |
 
   
 
